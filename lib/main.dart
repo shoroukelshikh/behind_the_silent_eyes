@@ -1,3 +1,4 @@
+import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/add_doc.dart';
 import 'package:behind_silent_eyes/features/splash/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: AddDoc(),
     );
   }
 }
