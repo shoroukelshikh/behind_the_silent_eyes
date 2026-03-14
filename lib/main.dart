@@ -1,4 +1,4 @@
-import 'package:behind_silent_eyes/features/admin/dashboard/presentation/screens/admin_dashboard.dart';
+import 'package:behind_silent_eyes/features/splash/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,6 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
     );
   }
 }
