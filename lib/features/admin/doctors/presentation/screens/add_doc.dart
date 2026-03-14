@@ -20,6 +20,7 @@ class _AddDocState extends State<AddDoc> {
   // DropDown
   String? selectedRole;
   final List<String> roles = ['Admin', 'Doctor'];
+  bool isPasswordHidden = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,10 +120,20 @@ class _AddDocState extends State<AddDoc> {
                   label: 'Password',
                   hintText: 'Please enter the Password',
                   controller: passwordController,
-                  obscureText: true,
+                  obscureText: isPasswordHidden,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isPasswordHidden = !isPasswordHidden;
+                      });
+                    },
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty)
-                      return 'Password required';
+                      {return 'Password required';}
                     if (value.length < 6) return 'Min 6 chars';
                     return null;
                   },
