@@ -1,3 +1,4 @@
+import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/add_doc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -55,34 +56,44 @@ class AdmindashboardPage extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 19),
-                Container(
-                  width: 169,
-                  height: 83,
-                  decoration: BoxDecoration(
-                    color: Color(0x99474161),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0xff000000).withAlpha(50),
-                        spreadRadius: 1,
-                        offset: Offset(0, 4),
-                        blurRadius: 6
+                InkWell(
+                  onTap:() {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddDoc(),
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Image.asset('assets/images/Add new doctor.png'),
-                      Text(
-                        'Add new Doctor',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xffffffff),
+                    );
+                  },
+                  child: Container(
+                    width: 169,
+                    height: 83,
+                    decoration: BoxDecoration(
+                      color: Color(0x99474161),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xff000000).withAlpha(50),
+                          spreadRadius: 1,
+                          offset: Offset(0, 4),
+                          blurRadius: 6
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Image.asset('assets/images/Add new doctor.png'),
+                        Text(
+                          'Add new Doctor',
+                          style: GoogleFonts.poppins(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xffffffff),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),

@@ -1,4 +1,6 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:behind_silent_eyes/features/admin/dashboard/presentation/screens/admin_dashboard.dart';
+import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/add_doc.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -23,6 +25,14 @@ class SplashScreen extends StatelessWidget {
           duration: Duration(seconds: 2),
           child: FadeIn(
             duration: Duration(seconds: 2),
+            onFinish: (controller) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AdminDashboard(),
+                ),
+              );
+            },
             child: Center(child: Image.asset('assets/images/logo.png')),
           ),
         ),
