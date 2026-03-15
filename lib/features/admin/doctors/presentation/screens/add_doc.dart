@@ -1,3 +1,4 @@
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,6 @@ class _AddDocState extends State<AddDoc> {
 
   final _formKey = GlobalKey<FormState>();
 
-  // DropDown
   String? selectedRole;
   final List<String> roles = ['Admin', 'Doctor'];
   bool isPasswordHidden = true;
@@ -41,11 +41,7 @@ class _AddDocState extends State<AddDoc> {
       body: Container(
         height: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFD6F3FA), Color(0xFFB4E5F2), Color(0xFF68848C)],
-          ),
+          gradient: AppColors.primary
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(

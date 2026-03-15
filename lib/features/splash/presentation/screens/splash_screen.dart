@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/dashboard/presentation/screens/admin_dashboard.dart';
-import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/add_doc.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -11,15 +11,7 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFD6F3FA),
-              Color(0xFFB4E5F2),
-              Color(0xFF68848C),
-            ],
-          ),
+          gradient: AppColors.primary,
         ),
         child: ZoomIn(
           duration: Duration(seconds: 2),
