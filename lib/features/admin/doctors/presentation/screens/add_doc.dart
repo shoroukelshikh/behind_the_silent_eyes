@@ -27,6 +27,7 @@ class _AddDocState extends State<AddDoc> {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(

@@ -22,51 +22,49 @@ class _AdminDashboardState extends State<AdminDashboard> {
   ];
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child:   Scaffold(
-      body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF474161),
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blueGrey,
-        unselectedItemColor: Colors.white70,
-        selectedLabelStyle:GoogleFonts.poppins(
+    return Scaffold(
+    body: _pages[_currentIndex],
+    bottomNavigationBar: BottomNavigationBar(
+      backgroundColor: Color(0xFF474161),
+      currentIndex: _currentIndex,
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: Colors.blueGrey,
+      unselectedItemColor: Colors.white70,
+      selectedLabelStyle:GoogleFonts.poppins(
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+
+      ),
+      unselectedLabelStyle:
+         GoogleFonts.poppins(
           fontSize: 12,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
 
-        ),
-        unselectedLabelStyle:
-           GoogleFonts.poppins(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-
-        ),
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/Dashboard.png')),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/dotors.png')),
-            label: 'patients',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/dotors.png')),
-            label: 'Doctors',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/adprofile.png')),
-            label: 'profile',
-          ),
-        ],
       ),
-      ),
+      onTap: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      items: const [
+        BottomNavigationBarItem(
+          icon: ImageIcon(AssetImage('assets/images/Dashboard.png')),
+          label: 'Dashboard',
+        ),
+        BottomNavigationBarItem(
+          icon: ImageIcon(AssetImage('assets/images/dotors.png')),
+          label: 'patients',
+        ),
+        BottomNavigationBarItem(
+          icon: ImageIcon(AssetImage('assets/images/dotors.png')),
+          label: 'Doctors',
+        ),
+        BottomNavigationBarItem(
+          icon: ImageIcon(AssetImage('assets/images/adprofile.png')),
+          label: 'profile',
+        ),
+      ],
+    ),
     );
   }
 }
