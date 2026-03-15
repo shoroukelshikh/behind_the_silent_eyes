@@ -1,4 +1,4 @@
-import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/add_doc.dart';
+import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/doc_list.dart';
 import 'package:behind_silent_eyes/features/splash/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 

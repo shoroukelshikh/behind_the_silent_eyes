@@ -1,3 +1,4 @@
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/dashboard/presentation/screens/admindashboard_page.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/doc_list.dart';
 import 'package:behind_silent_eyes/features/admin/patient/presentation/screens/patient_list.dart';
@@ -22,25 +23,28 @@ class _AdminDashboardState extends State<AdminDashboard> {
   ];
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child:   Scaffold(
-      body: _pages[_currentIndex],
+    return Scaffold(
+      body: Container(
+        decoration:  BoxDecoration(
+          gradient: AppColors.primary
+        ),
+        child: SafeArea(
+          child: _pages[_currentIndex],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF474161),
+        backgroundColor: const Color(0xFF474161),
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blueGrey,
         unselectedItemColor: Colors.white70,
-        selectedLabelStyle:GoogleFonts.poppins(
+        selectedLabelStyle: GoogleFonts.poppins(
           fontSize: 12,
           fontWeight: FontWeight.bold,
-
         ),
-        unselectedLabelStyle:
-           GoogleFonts.poppins(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-
+        unselectedLabelStyle: GoogleFonts.poppins(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
         ),
         onTap: (index) {
           setState(() {
@@ -65,7 +69,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
             label: 'profile',
           ),
         ],
-      ),
       ),
     );
   }
