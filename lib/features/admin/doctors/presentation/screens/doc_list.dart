@@ -1,10 +1,51 @@
+import 'package:behind_silent_eyes/core/widgets/search_field.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/add_doc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DocList extends StatelessWidget {
+class DocList extends StatefulWidget {
   const DocList({super.key});
+
   @override
+  State<DocList> createState() => _DocListState();
+}
+
+class _DocListState extends State<DocList> {
+  @override
+  void initState() {
+    filteredDoctors = doctors;
+    super.initState();
+  }
+  List<Map<String, String>> doctors = [
+    {
+      "name": "Ahmed Ali",
+      "code": "doc_101",
+      "email": "ahmed@gmail.com"
+    },
+    {
+      "name": "Mohamed Hassan",
+      "code": "doc_102",
+      "email": "mohamed@gmail.com"
+    },
+    {
+      "name": "Sara Khaled",
+      "code": "doc_103",
+      "email": "sara@gmail.com"
+    },
+  ];
+
+  void searchDoctor(String query) {
+    setState(() {
+      filteredDoctors = doctors.where((doctor) {
+        final name = doctor["name"]!.toLowerCase();
+        final code = doctor["code"]!.toLowerCase();
+        final search = query.toLowerCase();
+
+        return name.contains(search) || code.contains(search);
+      }).toList();
+    });
+  }
+  List<Map<String, String>> filteredDoctors = [];
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
@@ -13,36 +54,8 @@ class DocList extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(
-                  child: SizedBox(
-                    width: 200,
-                    height: 32,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: Colors.grey,
-                            width: 1.5,
-                          ),
-                        ),
-
-                        hintText: "Search doctor by name",
-                        hintStyle: TextStyle(
-                          color: Color(0x66665F5F),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
+                Expanded(child: SearchField(onSearch: searchDoctor, hint: "Search doctor by name or code")),
                 SizedBox(width: 15),
-
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xff474161),
@@ -67,7 +80,7 @@ class DocList extends StatelessWidget {
             SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
-                itemCount: 10,
+                itemCount: filteredDoctors.length,
                 itemBuilder: (context, index) {
                   return Card(
                     shape: RoundedRectangleBorder(
@@ -101,7 +114,7 @@ class DocList extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      "Doctor Name $index",
+                                      filteredDoctors[index]["name"]!,
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -131,7 +144,7 @@ class DocList extends StatelessWidget {
                                   style: TextStyle(fontSize: 14),
                                 ),
                                 Text(
-                                  "doc_123 ",
+                                  filteredDoctors[index]["code"]!,
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -161,7 +174,7 @@ class DocList extends StatelessWidget {
                               children: [
                                 Text("Email ", style: TextStyle(fontSize: 14)),
                                 Text(
-                                  "doc@gmail.com",
+                                  filteredDoctors[index]["email"]!,
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -179,7 +192,7 @@ class DocList extends StatelessWidget {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      // go to doc details page
+                                      // go to doc details
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Color(0xff0B2F60),
