@@ -1,5 +1,6 @@
 import 'package:behind_silent_eyes/core/widgets/search_field.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/add_doc.dart';
+import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/doc_details.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/edit_doc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,21 +18,31 @@ class _DocListState extends State<DocList> {
     filteredDoctors = doctors;
     super.initState();
   }
+
   List<Map<String, String>> doctors = [
     {
       "name": "Ahmed Ali",
       "code": "doc_101",
-      "email": "ahmed@gmail.com"
+      "email": "ahmed@gmail.com",
+      "role": "doctor",
+      "registered_on": "12/3/2026",
+      "phone": "01222339770",
     },
     {
       "name": "Mohamed Hassan",
       "code": "doc_102",
-      "email": "mohamed@gmail.com"
+      "email": "mohamed@gmail.com",
+      "role": "doctor",
+      "registered_on": "12/3/2026",
+      "phone": "01222339770",
     },
     {
       "name": "Sara Khaled",
       "code": "doc_103",
-      "email": "sara@gmail.com"
+      "email": "sara@gmail.com",
+      "role": "doctor",
+      "registered_on": "12/3/2026",
+      "phone": "01222339770",
     },
   ];
 
@@ -46,6 +57,7 @@ class _DocListState extends State<DocList> {
       }).toList();
     });
   }
+
   List<Map<String, String>> filteredDoctors = [];
   Widget build(BuildContext context) {
     return SafeArea(
@@ -55,7 +67,12 @@ class _DocListState extends State<DocList> {
           children: [
             Row(
               children: [
-                Expanded(child: SearchField(onSearch: searchDoctor, hint: "Search doctor by name or code")),
+                Expanded(
+                  child: SearchField(
+                    onSearch: searchDoctor,
+                    hint: "Search doctor by name or code",
+                  ),
+                ),
                 SizedBox(width: 15),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -129,7 +146,19 @@ class _DocListState extends State<DocList> {
                                     color: Colors.blueGrey,
                                   ),
                                   onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditDoc(code: "doc_123", email: "a@gmail.com", phone: "01015369825", fullName: "ahmed ali", role: "Doctor", pass: "ali123"),));
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditDoc(
+                                          code: "doc_123",
+                                          email: "a@gmail.com",
+                                          phone: "01015369825",
+                                          fullName: "ahmed ali",
+                                          role: "Doctor",
+                                          pass: "ali123",
+                                        ),
+                                      ),
+                                    );
                                   },
                                 ),
                               ],
@@ -185,7 +214,7 @@ class _DocListState extends State<DocList> {
                             ),
 
                             Spacer(),
-                             Divider(),
+                            Divider(),
                             // Last Row: View Button + Delete Icon
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -193,7 +222,14 @@ class _DocListState extends State<DocList> {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      // go to doc details
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DocDetails(
+                                            doctor: filteredDoctors[index],
+                                          ),
+                                        ),
+                                      );
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Color(0xff0B2F60),
