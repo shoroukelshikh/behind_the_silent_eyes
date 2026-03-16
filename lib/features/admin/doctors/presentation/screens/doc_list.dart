@@ -1,5 +1,6 @@
 import 'package:behind_silent_eyes/core/widgets/search_field.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/add_doc.dart';
+import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/edit_doc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -128,7 +129,7 @@ class _DocListState extends State<DocList> {
                                     color: Colors.blueGrey,
                                   ),
                                   onPressed: () {
-                                    // go to edit doc page
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditDoc(code: "doc_123", email: "a@gmail.com", phone: "01015369825", fullName: "ahmed ali", role: "Doctor", pass: "ali123"),));
                                   },
                                 ),
                               ],

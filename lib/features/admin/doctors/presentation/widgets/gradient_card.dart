@@ -1,3 +1,4 @@
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class GradientCard extends StatelessWidget {
@@ -23,14 +24,7 @@ class GradientCard extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         gradient: gradient ??
-            LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF0B2F60),
-                Color(0xFF707E90),
-              ],
-            ),
+            AppColors.cardColor,
         borderRadius: borderRadius ?? BorderRadius.circular(10),
       ),
       child: Column(
