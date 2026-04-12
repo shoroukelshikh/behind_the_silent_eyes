@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SendCode extends StatefulWidget {
-  const SendCode({super.key});
+  final String email;
+  const SendCode({super.key,required this.email});
 
   @override
   State<SendCode> createState() => _SendCodeState();

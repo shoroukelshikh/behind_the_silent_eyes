@@ -4,6 +4,8 @@ import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/t
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'success_newpass.dart';
+
 class ResetPass extends StatefulWidget {
   const ResetPass({super.key});
 
@@ -100,12 +102,12 @@ class _ResetPassState extends State<ResetPass> {
                   weight: FontWeight.bold,
                   onPressed: () {
                     if (_formKey.currentState!.validate()){
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) =>SuccessNewPass() ,
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>SuccessNewPass() ,
+                        ),
+                      );
                     }
                     },
                 )

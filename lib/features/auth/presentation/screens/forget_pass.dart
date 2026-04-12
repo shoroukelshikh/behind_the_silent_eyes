@@ -1,5 +1,6 @@
 import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/text_field.dart';
+import 'package:behind_silent_eyes/features/auth/presentation/screens/send_code.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -83,14 +84,14 @@ class _ForgetPassState extends State<ForgetPass> {
                             ),
                           );
 
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => SendCode(
-                          //       email: emailController.text,
-                          //     ),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SendCode(
+                                email: emailController.text,
+                              ),
+                            ),
+                          );
 
                         }
                       },
