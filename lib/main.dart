@@ -1,4 +1,5 @@
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/screens/doc_list.dart';
+import 'package:behind_silent_eyes/features/auth/presentation/screens/success_newpass.dart';
 import 'package:behind_silent_eyes/features/splash/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: SuccessNewPass(),
     );
   }
 }
