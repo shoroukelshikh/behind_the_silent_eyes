@@ -1,4 +1,5 @@
 import 'package:behind_silent_eyes/core/widgets/search_field.dart';
+import 'package:behind_silent_eyes/features/admin/patient/presentation/screens/patient_details.dart';
 import 'package:flutter/material.dart';
 
 class PatientList extends StatefulWidget {
@@ -151,7 +152,14 @@ class _PatientListState extends State<PatientList> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    // go to patient details
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PatientDetails(
+                                          patient: filteredPatients[index],
+                                        ),
+                                      ),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xff0B2F60),
