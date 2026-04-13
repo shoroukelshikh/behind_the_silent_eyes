@@ -1,77 +1,68 @@
 import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class AddDoc extends StatefulWidget {
-  const AddDoc({super.key});
+class EditProfile extends StatefulWidget {
+  final String fullName;
+  final String email;
+  final String phone;
+  final String password;
+
+  const EditProfile({
+    super.key,
+    required this.fullName,
+    required this.email,
+    required this.phone,
+    required this.password
+  });
 
   @override
-  State<AddDoc> createState() => _AddDocState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 
-class _AddDocState extends State<AddDoc> {
-  final TextEditingController codeController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController fullNameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
+class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
 
+  late TextEditingController nameController;
+  late TextEditingController emailController;
+  late TextEditingController phoneController;
+  late TextEditingController passwordController;
+
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.fullName);
+    emailController = TextEditingController(text: widget.email);
+    phoneController = TextEditingController(text: widget.phone);
+    passwordController = TextEditingController(text: widget.password);
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
   bool isPasswordHidden = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Color(0xff665F5F),
-            size: 30,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
       body: Container(
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: AppColors.primary
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            16,
-            100,
-            16,
-            16,
-          ), // 100 for spacing from top
+        decoration: BoxDecoration(gradient: AppColors.primary),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  'Fill in the doctor information bellow ',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Color(0xff665F5F),
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
 
-                CustomTextField(
-                  label: 'Doctor code',
-                  hintText: 'Please enter the code',
-                  controller: codeController,
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Code required' : null,
-                ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 200),
 
                 CustomTextField(
                   label: 'Email',
@@ -83,6 +74,7 @@ class _AddDocState extends State<AddDoc> {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 16),
 
                 CustomTextField(
@@ -99,12 +91,13 @@ class _AddDocState extends State<AddDoc> {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 16),
 
                 CustomTextField(
                   label: 'Full Name',
                   hintText: 'Please enter the Full name',
-                  controller: fullNameController,
+                  controller: nameController,
                   validator: (value) => value == null || value.isEmpty
                       ? 'Full name required'
                       : null,
@@ -118,7 +111,9 @@ class _AddDocState extends State<AddDoc> {
                   obscureText: isPasswordHidden,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                      isPasswordHidden
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -127,46 +122,52 @@ class _AddDocState extends State<AddDoc> {
                     },
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty)
-                      {return 'Password required';}
+                    if (value == null || value.isEmpty) {
+                      return 'Password required';
+                    }
                     if (value.length < 6) return 'Min 6 chars';
                     return null;
                   },
                 ),
-                SizedBox(height: 200,),
+                SizedBox(height: 200),
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xcc474161),
+                          backgroundColor: const Color(0xcc474161),
                           foregroundColor: Colors.white,
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Saved successfully'),
+                                content: Text("Profile updated successfully"),
                               ),
                             );
+                            // Future.delayed(const Duration(milliseconds: 500), () {
+                            //   Navigator.pushReplacement(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => DocList(),
+                            //     ),
+                            //   );
+                            // });
                           }
                         },
-                        child: const Text('Save'),
+                        child: const Text('Update'),
                       ),
                     ),
+
                     const SizedBox(width: 16),
+
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          codeController.clear();
-                          emailController.clear();
-                          phoneController.clear();
-                          fullNameController.clear();
-                          passwordController.clear();
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xcc474161),
+                          backgroundColor: const Color(0xcc474161),
                           foregroundColor: Colors.white,
                         ),
                         child: const Text('Cancel'),

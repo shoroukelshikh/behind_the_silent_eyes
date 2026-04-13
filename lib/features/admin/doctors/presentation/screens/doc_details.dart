@@ -156,30 +156,7 @@ class DocDetails extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 25,),
-                // role
-                Padding(
-                  padding: const EdgeInsets.only(left:20 ),
-                  child: Row(
-                    children: [
-                      Image.asset('assets/images/role.png'),
-                      SizedBox(width: 25,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Role' , style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color: Color(0x66ffffff),
-                          ),),
-                          Text(doctor["role"] ?? "" , style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xffffffff),
-                          ),)
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+
               ],),
             ),
           ],

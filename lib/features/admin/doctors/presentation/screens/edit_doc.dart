@@ -9,7 +9,6 @@ class EditDoc extends StatefulWidget {
   final String email;
   final String phone;
   final String fullName;
-  final String role;
   final String pass;
 
   const EditDoc({
@@ -18,8 +17,7 @@ class EditDoc extends StatefulWidget {
     required this.email,
     required this.phone,
     required this.fullName,
-    required this.role,
-    required this.pass
+    required this.pass,
   });
 
   @override
@@ -33,11 +31,7 @@ class _EditDocState extends State<EditDoc> {
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-
   final _formKey = GlobalKey<FormState>();
-
-  String? selectedRole;
-  final List<String> roles = ['Admin', 'Doctor'];
 
   @override
   void initState() {
@@ -47,9 +41,9 @@ class _EditDocState extends State<EditDoc> {
     emailController.text = widget.email;
     phoneController.text = widget.phone;
     fullNameController.text = widget.fullName;
-    selectedRole = widget.role;
     passwordController.text = widget.pass;
   }
+
   bool isPasswordHidden = true;
 
   @override
@@ -71,9 +65,7 @@ class _EditDocState extends State<EditDoc> {
       ),
       body: Container(
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: AppColors.primary,
-        ),
+        decoration: BoxDecoration(gradient: AppColors.primary),
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 100, 16, 16),
           child: Form(
@@ -81,7 +73,7 @@ class _EditDocState extends State<EditDoc> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                 Text(
+                Text(
                   'Edit doctor information',
                   style: GoogleFonts.poppins(
                     fontSize: 18,
@@ -98,7 +90,7 @@ class _EditDocState extends State<EditDoc> {
                   hintText: 'Please enter the code',
                   controller: codeController,
                   validator: (value) =>
-                  value == null || value.isEmpty ? 'Code required' : null,
+                      value == null || value.isEmpty ? 'Code required' : null,
                 ),
 
                 const SizedBox(height: 16),
@@ -150,7 +142,9 @@ class _EditDocState extends State<EditDoc> {
                   obscureText: isPasswordHidden,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                      isPasswordHidden
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -159,86 +153,15 @@ class _EditDocState extends State<EditDoc> {
                     },
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty)
-                    {return 'Password required';}
+                    if (value == null || value.isEmpty) {
+                      return 'Password required';
+                    }
                     if (value.length < 6) return 'Min 6 chars';
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
-
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Role',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xff665F5F),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    SizedBox(
-                      width: 340,
-                      height: 170,
-                      child: DropdownButtonFormField<String>(
-                        menuMaxHeight: 200,
-                        dropdownColor: Color(0xFF68848C),
-                        value: selectedRole,
-                        decoration:  InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color:Color(0xcc474161),
-                              width: 2,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Colors.grey,
-                              width: 1.5,
-                            ),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 2,
-                            ),
-                          ),
-
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                        hint: const Text('Select role'),
-                        items: roles
-                            .map(
-                              (role) => DropdownMenuItem(
-                            value: role,
-                            child: Text(role),
-                          ),
-                        )
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedRole = value;
-                          });
-                        },
-                        validator: (value) =>
-                        value == null ? 'Please select role' : null,
-                      ),
-                    ),
-                  ],
-                ),
+                SizedBox(height: 200),
                 Row(
                   children: [
                     Expanded(
