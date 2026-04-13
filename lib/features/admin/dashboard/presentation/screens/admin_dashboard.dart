@@ -26,6 +26,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     return Scaffold(
 
       body: Container(
+        height: double.infinity,
         decoration:  BoxDecoration(
           gradient: AppColors.primary
         ),
