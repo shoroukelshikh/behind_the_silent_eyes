@@ -24,7 +24,6 @@ class _DocListState extends State<DocList> {
       "name": "Ahmed Ali",
       "code": "doc_101",
       "email": "ahmed@gmail.com",
-      "role": "doctor",
       "registered_on": "12/3/2026",
       "phone": "01222339770",
     },
@@ -32,7 +31,6 @@ class _DocListState extends State<DocList> {
       "name": "Mohamed Hassan",
       "code": "doc_102",
       "email": "mohamed@gmail.com",
-      "role": "doctor",
       "registered_on": "12/3/2026",
       "phone": "01222339770",
     },
@@ -40,7 +38,6 @@ class _DocListState extends State<DocList> {
       "name": "Sara Khaled",
       "code": "doc_103",
       "email": "sara@gmail.com",
-      "role": "doctor",
       "registered_on": "12/3/2026",
       "phone": "01222339770",
     },
@@ -154,7 +151,6 @@ class _DocListState extends State<DocList> {
                                           email: "a@gmail.com",
                                           phone: "01015369825",
                                           fullName: "ahmed ali",
-                                          role: "Doctor",
                                           pass: "ali123",
                                         ),
                                       ),
@@ -183,20 +179,6 @@ class _DocListState extends State<DocList> {
                               ],
                             ),
                             Spacer(),
-                            // Row 3: Role
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("Role: ", style: TextStyle(fontSize: 14)),
-                                Text(
-                                  "doctor ",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
                             Spacer(),
                             // Row 4: Email
                             Row(
