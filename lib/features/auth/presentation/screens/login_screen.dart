@@ -2,6 +2,7 @@ import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/dashboard/presentation/screens/admin_dashboard.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/text_field.dart';
 import 'package:behind_silent_eyes/features/auth/presentation/screens/forget_pass.dart';
+import 'package:behind_silent_eyes/features/doctor/dashboard/presentation/screens/doc_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -121,8 +122,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDashboard(),));}
-                        },
+                            if(emailController.text=="doctor@gmail.com"){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => DocDashboard(),));}
+
+                          else{
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDashboard(),));}
+
+                        }}
+                        ,
                         child:  Text(
                           "Login",
                           style: GoogleFonts.poppins(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold),
