@@ -46,7 +46,7 @@ class StatCard extends StatelessWidget {
               ),),
             ],
           ),
-          Image.asset(icon,color: Color(0xff000000),width: 35,height: 35,),
+          Image.asset(icon,color: Color(0xff000000),width: 28,height: 35,),
         ],
       ),
     ) ;
