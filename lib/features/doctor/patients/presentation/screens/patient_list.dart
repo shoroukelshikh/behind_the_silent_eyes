@@ -29,6 +29,7 @@ class _PatientListState extends State<PatientList> {
       "date_of_birth": "15/03/1998",
       "gender": "Male",
       "medical_history": "Diabetes, Hypertension",
+      "registered_on":"2/9/2025"
     },
     {
       "name": "Mohamed Hassan",
@@ -36,6 +37,7 @@ class _PatientListState extends State<PatientList> {
       "date_of_birth": "22/07/1995",
       "gender": "Male",
       "medical_history": "Anemia",
+      "registered_on":"2/9/2025"
     },
     {
       "name": "Sara Khaled",
@@ -43,6 +45,7 @@ class _PatientListState extends State<PatientList> {
       "date_of_birth": "01/01/2000",
       "gender": "Female",
       "medical_history": "hypertension",
+      "registered_on":"2/9/2025"
     },
   ];
   void searchPatient(String query) {
@@ -233,7 +236,7 @@ class _PatientListState extends State<PatientList> {
                                   children: [
                                      CustomButton(text: "view", onPressed: () {
                                         Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) =>DocPatientDetails(),)
+                                          MaterialPageRoute(builder: (context) =>DocPatientDetails(patient: filteredPatients[index]),)
                                         );
                                       }, size: 14, weight: FontWeight.w400, width: 123, height: 26,color: Color(0xff474161),),
 
