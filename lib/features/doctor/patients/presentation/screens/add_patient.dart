@@ -16,7 +16,8 @@ class _AddPatientState extends State<AddPatient> {
   final TextEditingController ageController = TextEditingController();
   final TextEditingController nationalIdController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
-  final TextEditingController medicalHistoryController = TextEditingController();
+  final TextEditingController medicalHistoryController =
+      TextEditingController();
 
   String? _selectedGender;
   DateTime? selectedDate;
@@ -28,7 +29,12 @@ class _AddPatientState extends State<AddPatient> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back_ios_new, color: Color(0xff665F5F)),
+        leading: InkWell(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: Icon(Icons.arrow_back_ios_new, color: Color(0xff665F5F)),
+          onTap: () => Navigator.pop(context),
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -39,9 +45,9 @@ class _AddPatientState extends State<AddPatient> {
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.06,
-              ),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.06,
+            ),
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height * 0.09),
@@ -122,7 +128,8 @@ class _AddPatientState extends State<AddPatient> {
                       lastDate: DateTime.now(), // can't pick a future date
                     );
                     if (picked != null) {
-                      dobController.text = "${picked.day}/${picked.month}/${picked.year}";
+                      dobController.text =
+                          "${picked.day}/${picked.month}/${picked.year}";
                     }
                   },
                 ),
@@ -133,7 +140,8 @@ class _AddPatientState extends State<AddPatient> {
                   items: const ['Male', 'Female'],
                   value: _selectedGender,
                   onChanged: (val) => setState(() => _selectedGender = val),
-                  validator: (val) => val == null ? 'Please select a gender' : null,
+                  validator: (val) =>
+                      val == null ? 'Please select a gender' : null,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 CustomTextField(
@@ -159,7 +167,7 @@ class _AddPatientState extends State<AddPatient> {
                         weight: FontWeight.w600,
                         width: double.infinity,
                         height: MediaQuery.of(context).size.height * 0.06,
-                        color:  Color(0xff474161),
+                        color: Color(0xff474161),
                       ),
                     ),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.04),
@@ -175,7 +183,7 @@ class _AddPatientState extends State<AddPatient> {
                         weight: FontWeight.w600,
                         width: double.infinity,
                         height: MediaQuery.of(context).size.height * 0.06,
-                        color:  Color(0xff474161), // ← default color
+                        color: Color(0xff474161), // ← default color
                       ),
                     ),
                   ],
