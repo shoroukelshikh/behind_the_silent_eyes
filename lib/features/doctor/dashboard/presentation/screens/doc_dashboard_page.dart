@@ -93,7 +93,7 @@ class DocDashboardPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const PatientList(),
+                    builder: (context) =>  PatientList(),
                   ),
                 );
               },

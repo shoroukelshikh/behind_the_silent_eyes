@@ -19,7 +19,7 @@ class _DocDashboardState extends State<DocDashboard> {
   final List<Widget> _pages = [
     DocDashboardPage(),
     PatientList(),
-    Diagnose(),
+    PatientList(),
     DocProfile(),
   ];
   @override
