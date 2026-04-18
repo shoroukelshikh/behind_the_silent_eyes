@@ -123,10 +123,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()){
                             if(emailController.text=="doctor@gmail.com"){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => DocDashboard(),));}
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DocDashboard(),));}
 
                           else{
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDashboard(),));}
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminDashboard(),));}
 
                         }}
                         ,
