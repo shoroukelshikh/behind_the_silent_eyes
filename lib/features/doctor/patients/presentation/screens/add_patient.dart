@@ -84,7 +84,9 @@ class _AddPatientState extends State<AddPatient> {
                     if (value.length < 14) {
                       return "Enter a valid 14-digit  National ID";
                     }
-
+                    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                      return "National ID must contain digits only";
+                    }
                     return null;
                   },
                 ),
@@ -146,7 +148,7 @@ class _AddPatientState extends State<AddPatient> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 CustomTextField(
                   label: "Medical History",
-                  hintText: "Enter patient's medical history...",
+                  hintText: "Enter patient medical history,existing conditions ad allergies.",
                   controller: medicalHistoryController,
                   maxLines: 7,
                   validator: (value) {

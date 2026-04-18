@@ -119,6 +119,9 @@ class _EditDocState extends State<EditDoc> {
                     if (value.length < 11) {
                       return 'Min 11 chars';
                     }
+                    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                      return "Phone number must contain digits only";
+                    }
                     return null;
                   },
                 ),
@@ -129,9 +132,19 @@ class _EditDocState extends State<EditDoc> {
                   label: 'Full Name',
                   hintText: 'Please enter the Full name',
                   controller: fullNameController,
-                  validator: (value) => value == null || value.isEmpty
-                      ? 'Full name required'
-                      : null,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Name is required";
+                      }
+
+                      if (value.trim().length < 8) {
+                        return "Name must be at least 8 characters";
+                      }
+
+                      if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                        return "Name must contain letters only";
+                      }
+                      return null;}
                 ),
 
                 const SizedBox(height: 16),

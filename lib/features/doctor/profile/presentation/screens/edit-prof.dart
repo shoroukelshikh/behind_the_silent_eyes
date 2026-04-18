@@ -2,13 +2,13 @@ import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 
-class EditProfile extends StatefulWidget {
+class EditProf extends StatefulWidget {
   final String fullName;
   final String email;
   final String phone;
   final String password;
 
-  const EditProfile({
+  const EditProf({
     super.key,
     required this.fullName,
     required this.email,
@@ -17,10 +17,10 @@ class EditProfile extends StatefulWidget {
   });
 
   @override
-  State<EditProfile> createState() => _EditProfileState();
+  State<EditProf> createState() => _EditProfState();
 }
 
-class _EditProfileState extends State<EditProfile> {
+class _EditProfState extends State<EditProf> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController nameController;

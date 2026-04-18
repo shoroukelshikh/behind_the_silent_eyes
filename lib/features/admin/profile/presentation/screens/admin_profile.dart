@@ -1,5 +1,6 @@
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/gradient_card.dart';
 import 'package:behind_silent_eyes/features/admin/profile/presentation/screens/edit_profile.dart';
+import 'package:behind_silent_eyes/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -208,12 +209,12 @@ class _AdminProfileState extends State<AdminProfile> {
                     ),
                   ),
                   onPressed: () {
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => LoginPage(),
-                    //   ),
-                    // );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ),
+                    );
                   },
                   child: Text(
                     "Logout",
