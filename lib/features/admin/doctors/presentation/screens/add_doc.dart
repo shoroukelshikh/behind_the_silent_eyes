@@ -112,7 +112,7 @@ class _AddDocState extends State<AddDoc> {
                     }
 
                     if (value.trim().length < 8) {
-                      return "Name must be at least 3 characters";
+                      return "Name must be at least 8 characters";
                     }
 
                     if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {

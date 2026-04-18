@@ -63,7 +63,7 @@ class CustomTextField extends StatelessWidget {
               ),
 
               hintText: hintText,
-              hintStyle: TextStyle(
+              hintStyle: GoogleFonts.poppins(
                 color: Color(0x66665F5F),
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
