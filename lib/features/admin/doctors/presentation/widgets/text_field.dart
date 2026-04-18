@@ -9,6 +9,9 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool obscureText;
   final Widget? suffixIcon;
+  final VoidCallback? onTap;
+  final bool readOnly;
+  final int maxLines;
 
   const CustomTextField({
     super.key,
@@ -18,6 +21,9 @@ class CustomTextField extends StatelessWidget {
     this.validator,
     this.obscureText = false,
     this.suffixIcon,
+    this.onTap,
+    this.readOnly = false,
+    this.maxLines = 1,
   });
 
   @override
@@ -38,12 +44,13 @@ class CustomTextField extends StatelessWidget {
         const SizedBox(height: 8),
 
         SizedBox(
-          width: 340,
-          height: 50,
+          width:double.infinity,
           child: TextFormField(
             controller: controller,
             validator: validator,
-
+            readOnly: readOnly,
+            onTap: onTap,
+            maxLines: maxLines,
             obscureText: obscureText,
             decoration: InputDecoration(
               suffixIcon: suffixIcon,

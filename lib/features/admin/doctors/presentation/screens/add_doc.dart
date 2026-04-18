@@ -38,9 +38,7 @@ class _AddDocState extends State<AddDoc> {
       ),
       body: Container(
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: AppColors.primary
-        ),
+        decoration: BoxDecoration(gradient: AppColors.primary),
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
             16,
@@ -96,6 +94,9 @@ class _AddDocState extends State<AddDoc> {
                     if (value.length < 11) {
                       return 'Min 11 chars';
                     }
+                    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                      return "Phone number must contain digits only";
+                    }
                     return null;
                   },
                 ),
@@ -105,9 +106,21 @@ class _AddDocState extends State<AddDoc> {
                   label: 'Full Name',
                   hintText: 'Please enter the Full name',
                   controller: fullNameController,
-                  validator: (value) => value == null || value.isEmpty
-                      ? 'Full name required'
-                      : null,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "Name is required";
+                    }
+
+                    if (value.trim().length < 8) {
+                      return "Name must be at least 3 characters";
+                    }
+
+                    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                      return "Name must contain letters only";
+                    }
+
+                    return null; // valid
+                  },
                 ),
                 const SizedBox(height: 16),
 
@@ -118,7 +131,9 @@ class _AddDocState extends State<AddDoc> {
                   obscureText: isPasswordHidden,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                      isPasswordHidden
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -127,13 +142,14 @@ class _AddDocState extends State<AddDoc> {
                     },
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty)
-                      {return 'Password required';}
+                    if (value == null || value.isEmpty) {
+                      return 'Password required';
+                    }
                     if (value.length < 6) return 'Min 6 chars';
                     return null;
                   },
                 ),
-                SizedBox(height: 200,),
+                SizedBox(height: 200),
                 Row(
                   children: [
                     Expanded(
