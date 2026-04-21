@@ -243,7 +243,7 @@ class _PatientListState extends State<PatientList> {
 
                                         CustomButton(text: "Diagnose", onPressed: () {
                                           Navigator.push(context,
-                                              MaterialPageRoute(builder: (context) =>Diagnose(),)
+                                              MaterialPageRoute(builder: (context) =>Diagnose(patient: filteredPatients[index]),)
                                           );
                                         }, size: 14, weight: FontWeight.w400, width: 123, height: 26,color: Color(0xff0B2F60),),
 
