@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class GradientCard extends StatelessWidget {
   final List<Widget> children; // The content of the Column
   final double width;
-  final double height;
+  final double? height;
   final BorderRadius? borderRadius;
   final Gradient? gradient;
 
@@ -12,7 +12,7 @@ class GradientCard extends StatelessWidget {
     Key? key,
     required this.children,
     required this.width ,
-    required this.height ,
+    this.height ,
     this.borderRadius,
     this.gradient,
   }) : super(key: key);

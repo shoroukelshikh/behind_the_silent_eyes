@@ -38,7 +38,7 @@ class _SendCodeState extends State<SendCode> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
         decoration: BoxDecoration(
           gradient: AppColors.primary,
         ),
@@ -52,7 +52,7 @@ class _SendCodeState extends State<SendCode> {
                 },
                 child: Icon(Icons.arrow_back_ios),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
               Text(
                 "Check your email",
                 style: GoogleFonts.poppins(
@@ -61,7 +61,7 @@ class _SendCodeState extends State<SendCode> {
                   color: Color(0xff665F5F),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.012),
               Text(
                 "We've sent a 5-digit code to your email",
                 style: GoogleFonts.poppins(
@@ -69,15 +69,15 @@ class _SendCodeState extends State<SendCode> {
                   color: Color(0xff989898),
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.049),
               Form(
                 key: _formKey,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(5, (index) {
                     return SizedBox(
-                      width: 55,
-                      height: 60,
+                      width: MediaQuery.of(context).size.width * 0.13,
+                      height: MediaQuery.of(context).size.height * 0.074,
                       child: TextFormField(
                         controller: controllers[index],
                         focusNode: focusNodes[index],
@@ -120,10 +120,10 @@ class _SendCodeState extends State<SendCode> {
                   }),
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.049),
               SizedBox(
                 width: double.infinity,
-                height: 55,
+                height: MediaQuery.of(context).size.height * 0.067,
                 child: ElevatedButton (
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF474161),
@@ -156,7 +156,7 @@ class _SendCodeState extends State<SendCode> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

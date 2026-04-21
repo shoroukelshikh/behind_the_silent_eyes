@@ -1,6 +1,6 @@
 import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/core/widgets/elevated_button.dart';
-import 'package:behind_silent_eyes/features/admin/dashboard/presentation/screens/admin_dashboard.dart';
+import 'package:behind_silent_eyes/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,9 +16,9 @@ class SuccessNewPass extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 200),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.246),
             Image(image: AssetImage("assets/images/success.png")),
-            SizedBox(height: 60),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.074),
             Text(
               "your password has been reset successfully",
               style: GoogleFonts.poppins(
@@ -27,18 +27,18 @@ class SuccessNewPass extends StatelessWidget {
                 color: Color(0xff665F5F),
               ),
             ),
-            SizedBox(height: 120),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.148),
             CustomButton(
-              text: "go to home page",
+              text: "Login again",
               onPressed: () {
                 Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => AdminDashboard(),)
+                  MaterialPageRoute(builder: (context) => LoginScreen(),)
                 );
               },
-              size: 16,
+              size: MediaQuery.of(context).size.width * 0.039,
               weight: FontWeight.bold,
-              width: 350,
-              height: 60,
+              width: MediaQuery.of(context).size.width * 0.85,
+              height: MediaQuery.of(context).size.height * 0.074,
             ),
           ],
         ),

@@ -33,7 +33,7 @@ class _ResetPassState extends State<ResetPass> {
       ),
       body: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
         decoration: BoxDecoration(
           gradient: AppColors.primary,
         ),
@@ -43,13 +43,13 @@ class _ResetPassState extends State<ResetPass> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 95,),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.117),
                 Text("Set a new password",style: GoogleFonts.poppins(
                     fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Color(0xff665F5F)
                 ),),
-                SizedBox(height: 60,),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.074),
                 CustomTextField(label: "password", hintText: "Enter your new password",
                   controller: passwordController,
                   obscureText: isPasswordHidden,
@@ -69,7 +69,7 @@ class _ResetPassState extends State<ResetPass> {
                     if (value.length < 6) return 'Min 6 chars';
                     return null;
                   },),
-                SizedBox(height: 20,),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                 CustomTextField(label: "confirm password",
                   hintText: "re-Enter your new password",
                   controller: repasswordController,
@@ -93,12 +93,12 @@ class _ResetPassState extends State<ResetPass> {
                     return null;
                   },
                 ),
-                SizedBox(height: 65,),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.08),
                 CustomButton(
-                  height: 60,
-                  width: 350,
+                  height: MediaQuery.of(context).size.height * 0.074,
+                  width: MediaQuery.of(context).size.width * 0.85,
                   text: "update password",
-                  size: 16,
+                  size: MediaQuery.of(context).size.width * 0.039, // ~16px
                   weight: FontWeight.bold,
                   onPressed: () {
                     if (_formKey.currentState!.validate()){
