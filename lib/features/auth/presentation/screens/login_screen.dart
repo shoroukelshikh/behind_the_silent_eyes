@@ -28,13 +28,14 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/logo.png', width: 100, height: 100),
-              const SizedBox(height: 20),
+              Image.asset('assets/images/logo.png',   width: MediaQuery.of(context).size.width * 0.24,
+                height: MediaQuery.of(context).size.width * 0.24,),
+               SizedBox(height: MediaQuery.of(context).size.height * 0.025),
               Container(
-                width: 330,
-                padding: const EdgeInsets.all(20),
+                width: MediaQuery.of(context).size.width * 0.85,
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                 decoration: BoxDecoration(
-                  color: const Color(0xffDAE0E8FF).withOpacity(0.7),
+                  color:  Color(0xffDAE0E8FF).withOpacity(0.7),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.white70),
                 ),
@@ -49,8 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Color(0xff665F5F)
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Form(
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.025),                    Form(
                       key: _formKey,
                       child: Column(
                         children: [
@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 10,),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.012),
                           CustomTextField(
                             label: 'password',
                             hintText: 'please enter password',
@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.012),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
@@ -109,10 +109,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.012),
                     SizedBox(
                       width: double.infinity,
-                      height: 45,
+                      height: MediaQuery.of(context).size.height * 0.055,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff474161),
@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.018),
                   ],
                 ),
               ),
