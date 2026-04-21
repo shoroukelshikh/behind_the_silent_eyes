@@ -2,9 +2,16 @@ import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AiResult extends StatelessWidget {
-  const AiResult({super.key});
+class AiResult extends StatefulWidget {
+  final Map <String, dynamic>? diagnose;
+  final Map<String, String>? patient;
+  const AiResult({super.key, this.diagnose,this.patient});
 
+  @override
+  State<AiResult> createState() => _AiResultState();
+}
+
+class _AiResultState extends State<AiResult> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,26 +69,11 @@ class AiResult extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Disease:',
-                            style: GoogleFonts.poppins(color: Colors.grey),
-                          ),
-                          Text(
-                            'Diabetes.',
-                            style: GoogleFonts.poppins(
-                              color: Color(0xff5E5757),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.02,
-                          ),
-                          Text(
                             'Diagnosis:',
                             style: GoogleFonts.poppins(color: Colors.grey),
                           ),
                           Text(
-                            'Diabetes.',
+                            widget.diagnose!["disease"],
                             style: GoogleFonts.poppins(
                               color: Color(0xff5E5757),
                               fontSize: 16,
@@ -96,7 +88,7 @@ class AiResult extends StatelessWidget {
                             style: GoogleFonts.poppins(color: Colors.grey),
                           ),
                           Text(
-                            'Moderate',
+                            widget.diagnose!["severity"],
                             style: GoogleFonts.poppins(
                               color: Color(0xff5E5757),
                               fontSize: 16,
@@ -111,7 +103,7 @@ class AiResult extends StatelessWidget {
                             style: GoogleFonts.poppins(color: Colors.grey),
                           ),
                           Text(
-                            '80%',
+                            widget.diagnose!["confidence"],
                             style: GoogleFonts.poppins(
                               color: Color(0xff5E5757),
                               fontSize: 16,
@@ -126,7 +118,7 @@ class AiResult extends StatelessWidget {
                             style: GoogleFonts.poppins(color: Colors.grey),
                           ),
                           Text(
-                            '12/5/2026',
+                            widget.diagnose!["date"],
                             style: GoogleFonts.poppins(
                               color: Color(0xff5E5757),
                               fontSize: 16,
@@ -173,7 +165,7 @@ class AiResult extends StatelessWidget {
                             style: GoogleFonts.poppins(color: Colors.grey),
                           ),
                           Text(
-                            'mona.',
+                            (widget.patient?["name"]?? ""),
                             style: GoogleFonts.poppins(
                               color: Color(0xff5E5757),
                               fontSize: 16,
@@ -203,7 +195,7 @@ class AiResult extends StatelessWidget {
                             style: GoogleFonts.poppins(color: Colors.grey),
                           ),
                           Text(
-                            'Female',
+                            (widget.patient?["gender"]?? ""),
                             style: GoogleFonts.poppins(
                               color: Color(0xff5E5757),
                               fontSize: 16,

@@ -1,5 +1,6 @@
 import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/gradient_card.dart';
+import 'package:behind_silent_eyes/features/doctor/patients/presentation/screens/Diagnoses_history.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -42,8 +43,7 @@ class DocPatientDetails extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(Icons.person, color: Colors.white),
-                          SizedBox(width: 9),
-                          Text(
+                      SizedBox(width: width * 0.02),                          Text(
                             patient["name"] ?? "",
                             style: GoogleFonts.poppins(
                               fontSize: 15,
@@ -346,6 +346,29 @@ class DocPatientDetails extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: height * .02),
+                    Padding(
+                      padding: EdgeInsets.only(left: width * 0.05),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            child: Text(
+                              'view all',
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color:Colors.white,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.white,
+                              ),
+                            ),
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => DiagnosesHistory(patient: patient,),));
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ],
