@@ -43,78 +43,82 @@ class _ForgetPassState extends State<ForgetPass> {
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(gradient: AppColors.primary),
-        child: Column(
-          children: [
-            SizedBox(height: 180),
-            Text(
-              "Please enter your email to reset the password",
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff665F5F),
+        child: Padding(
+          padding:  EdgeInsets.all(MediaQuery.of(context).size.height*.01),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*.2),
+              Text(
+                "Please enter your email to reset the password",
+                style: GoogleFonts.poppins(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff665F5F),
+                ),
               ),
-            ),
-            SizedBox(height: 70,),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  CustomTextField(
-                    label: 'Email',
-                    hintText: 'Enter your email',
-                    controller: emailController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return 'Email required';
-                      if (!value.contains('@')) return 'Enter valid email';
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 50),
-
-                  SizedBox(
-                    width: 340,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Reset code sent"),
-                            ),
-                          );
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SendCode(
-                                email: emailController.text,
-                              ),
-                            ),
-                          );
-
-                        }
+              SizedBox(height: MediaQuery.of(context).size.height*.06),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    CustomTextField(
+                      label: 'Email',
+                      hintText: 'Enter your email',
+                      controller: emailController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return 'Email required';
+                        if (!value.contains('@')) return 'Enter valid email';
+                        return null;
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xff474161),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*.06),
+
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.83,
+                      height: MediaQuery.of(context).size.height * 0.062,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Reset code sent"),
+                              ),
+                            );
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SendCode(
+                                  email: emailController.text,
+                                ),
+                              ),
+                            );
+
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xff474161),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        "Send reset code",
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                        child: Text(
+                          "Send reset code",
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
