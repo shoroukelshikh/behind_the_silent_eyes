@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'ai_result.dart';
+
 class Diagnose extends StatefulWidget {
   final Map<String, String> patient;
   const Diagnose({super.key, required this.patient});
@@ -136,27 +138,27 @@ class _DiagnoseState extends State<Diagnose> {
                     text: "Analyze Image",
                     onPressed: ()
                       {
-                        // if (selectedDisease == null) {
-                        //   ScaffoldMessenger.of(context).showSnackBar(
-                        //     SnackBar(content: Text("Please select a disease type")),
-                        //   );
-                        //   return;
-                        // }
-                        //
-                        // if (image == null) {
-                        //   ScaffoldMessenger.of(context).showSnackBar(
-                        //     SnackBar(content: Text("Please upload an image")),
-                        //   );
-                        //   return;
-                        // }
-                        //
-                        //
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => AiResult(),
-                        //   ),
-                        // );
+                        if (selectedDisease == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Please select a disease type")),
+                          );
+                          return;
+                        }
+
+                        if (image == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Please upload an image")),
+                          );
+                          return;
+                        }
+
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AiResult(),
+                          ),
+                        );
                     },
                     size: 15,
                     weight: FontWeight.bold,
