@@ -284,7 +284,9 @@ class _PatientListState extends State<PatientList> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => Diagnose(),
+                                          builder: (context) => Diagnose(
+                                            patient: filteredPatients[index],
+                                          ),
                                         ),
                                       );
                                     },
