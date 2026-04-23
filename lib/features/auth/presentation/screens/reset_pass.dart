@@ -1,9 +1,9 @@
 import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/core/widgets/elevated_button.dart';
-import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../admin/presentation/widgets/text_field.dart';
 import 'success_newpass.dart';
 
 class ResetPass extends StatefulWidget {

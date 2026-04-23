@@ -1,10 +1,11 @@
 import 'package:behind_silent_eyes/core/theme/colors.dart';
-import 'package:behind_silent_eyes/features/admin/dashboard/presentation/screens/admin_dashboard.dart';
-import 'package:behind_silent_eyes/features/admin/doctors/presentation/widgets/text_field.dart';
 import 'package:behind_silent_eyes/features/auth/presentation/screens/forget_pass.dart';
-import 'package:behind_silent_eyes/features/doctor/dashboard/presentation/screens/doc_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../admin/presentation/screens/dashboard/admin_dashboard.dart';
+import '../../../admin/presentation/widgets/text_field.dart';
+import '../../../doctor/presentation/screens/dashboard/doc_dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
