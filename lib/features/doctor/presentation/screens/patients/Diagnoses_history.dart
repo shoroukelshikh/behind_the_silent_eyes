@@ -70,7 +70,7 @@ class _DiagnosesHistoryState extends State<DiagnosesHistory> {
                   itemBuilder: (context, index) {
                     final item =
                     state.predictions[index] as PredictionModel;
-                    final displayMap = item.toDisplayMap();
+                    // final displayMap = item.toDisplayMap();
                     return Card(
                       margin: EdgeInsets.symmetric(
                           horizontal: width * 0.03,
@@ -108,8 +108,21 @@ class _DiagnosesHistoryState extends State<DiagnosesHistory> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) => AiResult(
-                                          diagnose: displayMap,
-                                          patient:  widget.patient,
+                                          diagnose: {
+                                            'id': item.id.toString(),
+                                            'disease': item.diseaseType ?? '-',
+                                            'severity': item.severity ?? '-',
+                                            'confidence': item.confidence?.toString() ?? '-',
+                                            'date': item.createdAt ?? '-',
+                                            'status': item.status ?? '-',
+                                            'image_path': item.imagePath ?? '', // 👈 أهم سطر
+                                          },
+                                          patient: {
+                                            'id': widget.patient?['id'] ?? '',
+                                            'name': widget.patient?['name'] ?? '-',
+                                            'age': widget.patient?['age'] ?? '-',
+                                            'gender': widget.patient?['gender'] ?? '-',
+                                          },
                                         ),
                                       ),
                                     );
@@ -120,18 +133,18 @@ class _DiagnosesHistoryState extends State<DiagnosesHistory> {
                                   height: height * 0.04,
                                 ),
                                 SizedBox(height: height * 0.01),
-                                CustomButton(
-                                  text: 'Download',
-                                  onPressed: () {
-                                    context
-                                        .read<DoctorCubit>()
-                                        .generateReport(item.id);
-                                  },
-                                  size: 14,
-                                  weight: FontWeight.w400,
-                                  width: width * 0.28,
-                                  height: height * 0.04,
-                                ),
+                                // CustomButton(
+                                //   text: 'Download',
+                                //   onPressed: () {
+                                //     context
+                                //         .read<DoctorCubit>()
+                                //         .generateReport(item.id);
+                                //   },
+                                //   size: 14,
+                                //   weight: FontWeight.w400,
+                                //   width: width * 0.28,
+                                //   height: height * 0.04,
+                                // ),
                               ],
                             ),
                           ],

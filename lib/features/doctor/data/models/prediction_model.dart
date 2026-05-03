@@ -35,5 +35,6 @@ class PredictionModel extends PredictionEntity {
     'confidence': confidencePercent,
     'date':       createdAt ?? '-',
     'status':     status,
+    'image_path': imagePath  ?? '',
   };
 }

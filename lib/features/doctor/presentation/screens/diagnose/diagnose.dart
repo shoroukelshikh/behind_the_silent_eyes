@@ -56,8 +56,9 @@ class _DiagnoseState extends State<Diagnose> {
             context,
             MaterialPageRoute(
               builder: (_) => AiResult(
-                diagnose: prediction.toDisplayMap(),
-                patient:  widget.patient,
+                diagnose:    prediction.toDisplayMap(),
+                patient:     widget.patient,
+                localImage:  image,   // ← الصورة اللي اختارها الدكتور
               ),
             ),
           );

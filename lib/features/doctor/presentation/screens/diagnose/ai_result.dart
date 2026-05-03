@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:behind_silent_eyes/core/network/api_endpoints.dart';
 import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/doctor/presentation/cubit/doctor_cubit.dart';
 import 'package:behind_silent_eyes/features/doctor/presentation/cubit/doctor_state.dart';
@@ -10,9 +12,18 @@ class AiResult extends StatelessWidget {
   final Map<String, dynamic>? diagnose;
   final Map<String, String>?  patient;
 
-  const AiResult({super.key, this.diagnose, this.patient});
+  // الصورة المحلية اللي رفعها الدكتور (بتيجي من Diagnose screen)
+  final File? localImage;
+
+  const AiResult({
+    super.key,
+    this.diagnose,
+    this.patient,
+    this.localImage,   // ← جديد
+  });
 
   @override
+
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
@@ -20,7 +31,6 @@ class AiResult extends StatelessWidget {
     return BlocListener<DoctorCubit, DoctorState>(
       listener: (context, state) {
         if (state is ReportGenerated) {
-          // افتح الـ PDF في المتصفح
           launchUrl(Uri.parse(state.fileUrl),
               mode: LaunchMode.externalApplication);
         }
@@ -52,16 +62,23 @@ class AiResult extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: h * 0.1),
+
+                  // ── الصورة ─────────────────────────────────────
                   Center(
-                    child: Image.asset(
-                        'assets/images/Central-Retinal-Artery-Occlusion 1.png'),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: _buildImage(h, w),
+                    ),
                   ),
+
+                  SizedBox(height: h * 0.02),
                   Text('Diagnoses result',
                       style: GoogleFonts.poppins(
                           color: const Color(0xff5E5757),
                           fontWeight: FontWeight.bold,
                           fontSize: 16)),
                   SizedBox(height: h * 0.02),
+
                   // ── Diagnose Card ──────────────────────────────
                   Center(
                     child: Container(
@@ -74,19 +91,20 @@ class AiResult extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _resultRow('Diagnosis', diagnose?['disease'] ?? '-'),
+                          _resultRow('Diagnosis',      diagnose?['disease']    ?? '-'),
                           SizedBox(height: h * 0.02),
-                          _resultRow('Severity level', diagnose?['severity'] ?? '-'),
+                          _resultRow('Severity level', diagnose?['severity']   ?? '-'),
                           SizedBox(height: h * 0.02),
-                          _resultRow('Confidence', diagnose?['confidence'] ?? '-'),
+                          _resultRow('Confidence',     diagnose?['confidence'] ?? '-'),
                           SizedBox(height: h * 0.02),
-                          _resultRow('Date', diagnose?['date'] ?? '-'),
+                          _resultRow('Date',           diagnose?['date']       ?? '-'),
                           SizedBox(height: h * 0.02),
-                          _resultRow('Status', diagnose?['status'] ?? '-'),
+                          _resultRow('Status',         diagnose?['status']     ?? '-'),
                         ],
                       ),
                     ),
                   ),
+
                   SizedBox(height: h * 0.02),
                   Text('Patient information',
                       style: GoogleFonts.poppins(
@@ -94,6 +112,7 @@ class AiResult extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 16)),
                   SizedBox(height: h * 0.02),
+
                   // ── Patient Card ───────────────────────────────
                   Center(
                     child: Container(
@@ -112,38 +131,35 @@ class AiResult extends StatelessWidget {
                           SizedBox(height: h * 0.02),
                           _resultRow('Gender', patient?['gender'] ?? '-'),
                           SizedBox(height: h * 0.03),
-                          // ── Download Report ────────────────────
-                          Center(
-                            child: BlocBuilder<DoctorCubit, DoctorState>(
-                              builder: (context, state) {
-                                return state is DoctorLoading
-                                    ? const CircularProgressIndicator()
-                                    : InkWell(
-                                  onTap: () {
-                                    final id = diagnose?['id'];
-                                    if (id != null) {
-                                      context
-                                          .read<DoctorCubit>()
-                                          .generateReport(id);
-                                    }
-                                  },
-                                  child: Text(
-                                    'Download report',
-                                    style: GoogleFonts.poppins(
-                                      color: const Color(0xff162BE8),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17,
-                                      decoration:
-                                      TextDecoration.underline,
-                                      decorationThickness: 3,
-                                      decorationColor:
-                                      const Color(0xff162BE8),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
+                          // Center(
+                          //   child: BlocBuilder<DoctorCubit, DoctorState>(
+                          //     builder: (context, state) {
+                          //       return state is DoctorLoading
+                          //           ? const CircularProgressIndicator()
+                          //           : InkWell(
+                          //         onTap: () {
+                          //           final id = diagnose?['id'];
+                          //           if (id != null) {
+                          //             context.read<DoctorCubit>().generateReport(
+                          //               id is int ? id : int.tryParse(id.toString()) ?? 0,
+                          //             );
+                          //           }
+                          //         },
+                          //         child: Text(
+                          //           'Download report',
+                          //           style: GoogleFonts.poppins(
+                          //             color:               const Color(0xff162BE8),
+                          //             fontWeight:          FontWeight.bold,
+                          //             fontSize:            17,
+                          //             decoration:          TextDecoration.underline,
+                          //             decorationThickness: 3,
+                          //             decorationColor:     const Color(0xff162BE8),
+                          //           ),
+                          //         ),
+                          //       );
+                          //     },
+                          //   ),
+                          // ),
                           SizedBox(height: h * 0.04),
                         ],
                       ),
@@ -159,16 +175,97 @@ class AiResult extends StatelessWidget {
     );
   }
 
+  // Widget _buildImage(double h, double w) {
+  //   // الأولوية 1: الصورة المحلية اللي رفعها الدكتور للتو
+  //   // if (localImage != null) {
+  //   //   return Image.file(
+  //   //     localImage!,
+  //   //     height: h * 0.25,
+  //   //     width:  w * 0.75,
+  //   //     fit:    BoxFit.cover,
+  //   //   );
+  //   // }
+  //
+  //   // الأولوية 2: صورة من السيرفر (لما بنيجي من History)
+  //   final imagePath = diagnose?['image_path']?.toString() ?? '';
+  //   if (imagePath.isNotEmpty) {
+  //     final base = ApiEndpoints.baseUrl.replaceAll('/api', '');
+  //     final url  = '$base/storage/$imagePath';
+  //     return Image.network(
+  //       url,
+  //       height: h * 0.25,
+  //       width:  w * 0.75,
+  //       fit:    BoxFit.cover,
+  //       loadingBuilder: (_, child, progress) =>
+  //       progress == null ? child : SizedBox(
+  //         height: h * 0.25,
+  //         width:  w * 0.75,
+  //         child:  const Center(child: CircularProgressIndicator()),
+  //       ),
+  //       errorBuilder: (_, __, ___) => _fallback(h, w),
+  //     );
+  //   }
+  //
+  //   // الأولوية 3: fallback
+  //   return _fallback(h, w);
+  // }
+  Widget _buildImage(double h, double w) {
+    // الأولوية 1: صورة السيرفر — سواء التشخيص من الويب أو الموبايل
+    final imagePath = diagnose?['image_path']?.toString() ?? '';
+    if (imagePath.isNotEmpty) {
+      final base = ApiEndpoints.baseUrl.replaceAll('/api', '');
+      final url  = '$base/storage/$imagePath';
+      return Image.network(
+        url,
+        height: h * 0.25,
+        width:  w * 0.75,
+        fit:    BoxFit.cover,
+        loadingBuilder: (_, child, progress) =>
+        progress == null
+            ? child
+            : SizedBox(
+          height: h * 0.25,
+          width:  w * 0.75,
+          child:  const Center(child: CircularProgressIndicator()),
+        ),
+        errorBuilder: (_, __, ___) =>
+        // الأولوية 2: لو السيرفر فشل وعندنا صورة محلية (موبايل فقط)
+        localImage != null
+            ? Image.file(localImage!, height: h * 0.25, width: w * 0.75, fit: BoxFit.cover)
+            : _fallback(h, w),
+      );
+    }
+
+    // الأولوية 2: صورة محلية لو مفيش image_path (حالة نادرة)
+    if (localImage != null) {
+      return Image.file(
+        localImage!,
+        height: h * 0.25,
+        width:  w * 0.75,
+        fit:    BoxFit.cover,
+      );
+    }
+
+    // الأولوية 3: fallback
+    return _fallback(h, w);
+  }
+
+  Widget _fallback(double h, double w) => Image.asset(
+    'assets/images/conjunctiva.jpg',
+    height: h * 0.25,
+    width:  w * 0.75,
+    fit:    BoxFit.cover,
+  );
+
   Widget _resultRow(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: GoogleFonts.poppins(color: Colors.grey)),
+        Text(label, style: GoogleFonts.poppins(color: Colors.grey)),
         Text(value,
             style: GoogleFonts.poppins(
-                color: const Color(0xff5E5757),
-                fontSize: 16,
+                color:      const Color(0xff5E5757),
+                fontSize:   16,
                 fontWeight: FontWeight.w500)),
       ],
     );
