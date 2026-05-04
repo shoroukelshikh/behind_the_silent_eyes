@@ -175,40 +175,6 @@ class AiResult extends StatelessWidget {
     );
   }
 
-  // Widget _buildImage(double h, double w) {
-  //   // الأولوية 1: الصورة المحلية اللي رفعها الدكتور للتو
-  //   // if (localImage != null) {
-  //   //   return Image.file(
-  //   //     localImage!,
-  //   //     height: h * 0.25,
-  //   //     width:  w * 0.75,
-  //   //     fit:    BoxFit.cover,
-  //   //   );
-  //   // }
-  //
-  //   // الأولوية 2: صورة من السيرفر (لما بنيجي من History)
-  //   final imagePath = diagnose?['image_path']?.toString() ?? '';
-  //   if (imagePath.isNotEmpty) {
-  //     final base = ApiEndpoints.baseUrl.replaceAll('/api', '');
-  //     final url  = '$base/storage/$imagePath';
-  //     return Image.network(
-  //       url,
-  //       height: h * 0.25,
-  //       width:  w * 0.75,
-  //       fit:    BoxFit.cover,
-  //       loadingBuilder: (_, child, progress) =>
-  //       progress == null ? child : SizedBox(
-  //         height: h * 0.25,
-  //         width:  w * 0.75,
-  //         child:  const Center(child: CircularProgressIndicator()),
-  //       ),
-  //       errorBuilder: (_, __, ___) => _fallback(h, w),
-  //     );
-  //   }
-  //
-  //   // الأولوية 3: fallback
-  //   return _fallback(h, w);
-  // }
   Widget _buildImage(double h, double w) {
     // الأولوية 1: صورة السيرفر — سواء التشخيص من الويب أو الموبايل
     final imagePath = diagnose?['image_path']?.toString() ?? '';
