@@ -1,8 +1,11 @@
 import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/core/widgets/drop_down.dart';
 import 'package:behind_silent_eyes/core/widgets/elevated_button.dart';
+import 'package:behind_silent_eyes/features/doctor/presentation/cubit/doctor_cubit.dart';
+import 'package:behind_silent_eyes/features/doctor/presentation/cubit/doctor_state.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../../../admin/presentation/widgets/text_field.dart';
 
 class AddPatient extends StatefulWidget {
@@ -13,186 +16,204 @@ class AddPatient extends StatefulWidget {
 }
 
 class _AddPatientState extends State<AddPatient> {
-  final TextEditingController fullNameController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
-  final TextEditingController nationalIdController = TextEditingController();
-  final TextEditingController dobController = TextEditingController();
-  final TextEditingController medicalHistoryController =
-      TextEditingController();
-
+  final _fullNameController      = TextEditingController();
+  final _ageController           = TextEditingController();
+  final _nationalIdController    = TextEditingController();
+  final _dobController           = TextEditingController();
+  final _medicalHistoryController = TextEditingController();
+  final _formKey                 = GlobalKey<FormState>();
   String? _selectedGender;
-  DateTime? selectedDate;
-  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _ageController.dispose();
+    _nationalIdController.dispose();
+    _dobController.dispose();
+    _medicalHistoryController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        leading: InkWell(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          child: Icon(Icons.arrow_back_ios_new, color: Color(0xff665F5F)),
-          onTap: () => Navigator.pop(context),
-        ),
-        elevation: 0,
+    return BlocListener<DoctorCubit, DoctorState>(
+      listener: (context, state) {
+        if (state is PatientAdded) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Patient added successfully')),
+          );
+          Navigator.pop(context);
+        }
+        if (state is DoctorFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(gradient: AppColors.primary),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.06,
-            ),
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.09),
-                CustomTextField(
-                  label: "Fullname",
-                  hintText: "Please enter the name",
-                  controller: fullNameController,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Name is required";
-                    }
-
-                    if (value.trim().length < 8) {
-                      return "Name must be at least 8 characters";
-                    }
-
-                    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-                      return "Name must contain letters only";
-                    }
-
-                    return null; // valid
-                  },
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                CustomTextField(
-                  label: "National ID",
-                  hintText: "please enter the ID",
-                  controller: nationalIdController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "National ID is required";
-                    }
-
-                    if (value.length < 14) {
-                      return "Enter a valid 14-digit  National ID";
-                    }
-                    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                      return "National ID must contain digits only";
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                CustomTextField(
-                  label: "Age",
-                  hintText: "Please enter the age",
-                  controller: ageController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Age is required";
-                    }
-                    final age = int.tryParse(value);
-                    if (age == null) {
-                      return "Age must be a number";
-                    }
-                    if (age <= 0 || age > 120) {
-                      return "Enter a valid age";
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                CustomTextField(
-                  readOnly: true,
-                  label: "Date of Birth",
-                  hintText: "mm/dd/yyyy",
-                  controller: dobController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Date of birth is required";
-                    }
-                    return null;
-                  },
-                  suffixIcon: const Icon(Icons.calendar_today),
-                  onTap: () async {
-                    DateTime? picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime.now(), // can't pick a future date
-                    );
-                    if (picked != null) {
-                      dobController.text =
-                          "${picked.day}/${picked.month}/${picked.year}";
-                    }
-                  },
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                CustomDropdownField(
-                  label: 'Gender',
-                  hintText: 'Select gender',
-                  items: const ['Male', 'Female'],
-                  value: _selectedGender,
-                  onChanged: (val) => setState(() => _selectedGender = val),
-                  validator: (val) =>
-                      val == null ? 'Please select a gender' : null,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                CustomTextField(
-                  label: "Medical History",
-                  hintText: "Enter patient medical history,existing conditions ad allergies.",
-                  controller: medicalHistoryController,
-                  maxLines: 7,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Medical history is required";
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        text: "Cancel",
-                        onPressed: () => Navigator.pop(context),
-                        size: 16,
-                        weight: FontWeight.w600,
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        color: Color(0xff474161),
+        appBar: AppBar(
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back_ios_new,
+                color: Color(0xff665F5F)),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+        ),
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(gradient: AppColors.primary),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.06,
+              ),
+              child: Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.09),
+                  CustomTextField(
+                    label: 'Fullname',
+                    hintText: 'Please enter the name',
+                    controller: _fullNameController,
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) return 'Name required';
+                      if (v.trim().length < 3) return 'Min 3 characters';
+                      if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(v))
+                        return 'Letters only';
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  CustomTextField(
+                    label: 'National ID',
+                    hintText: 'Please enter the ID',
+                    controller: _nationalIdController,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'National ID required';
+                      if (v.length < 14) return '14 digits required';
+                      if (!RegExp(r'^[0-9]+$').hasMatch(v))
+                        return 'Digits only';
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  CustomTextField(
+                    label: 'Age',
+                    hintText: 'Please enter the age',
+                    controller: _ageController,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Age required';
+                      final age = int.tryParse(v);
+                      if (age == null || age <= 0 || age > 120)
+                        return 'Enter valid age';
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  GestureDetector(
+                    onTap: _pickDate,
+                    child: AbsorbPointer(
+                      child: CustomTextField(
+                        label: 'Date of Birth',
+                        hintText: 'YYYY-MM-DD',
+                        controller: _dobController,
+                        suffixIcon: const Icon(Icons.calendar_today),
+                        validator: (v) =>
+                        v == null || v.isEmpty ? 'Date required' : null,
                       ),
                     ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-                    Expanded(
-                      child: CustomButton(
-                        text: "Save",
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // save logic here
-                          }
-                        },
-                        size: 16,
-                        weight: FontWeight.w600,
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        color: Color(0xff474161), // ← default color
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-              ],
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  CustomDropdownField(
+                    label: 'Gender',
+                    hintText: 'Select gender',
+                    items: const ['male', 'female'],
+                    value: _selectedGender,
+                    onChanged: (val) =>
+                        setState(() => _selectedGender = val),
+                    validator: (val) =>
+                    val == null ? 'Please select a gender' : null,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  CustomTextField(
+                    label: 'Medical History',
+                    hintText: 'Enter existing conditions and allergies',
+                    controller: _medicalHistoryController,
+                    maxLines: 4,
+                    validator: (_) => null,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  BlocBuilder<DoctorCubit, DoctorState>(
+                    builder: (context, state) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: CustomButton(
+                              text: 'Cancel',
+                              onPressed: () => Navigator.pop(context),
+                              size: 16,
+                              weight: FontWeight.w600,
+                              width: double.infinity,
+                              height:
+                              MediaQuery.of(context).size.height * 0.06,
+                              color: const Color(0xff474161),
+                            ),
+                          ),
+                          SizedBox(
+                              width:
+                              MediaQuery.of(context).size.width * 0.04),
+                          Expanded(
+                            child: CustomButton(
+                              text: state is DoctorLoading
+                                  ? 'Saving...'
+                                  : 'Save',
+                              onPressed: state is DoctorLoading
+                                  ? () {}
+                                  : () {
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<DoctorCubit>().addPatient(
+                                    name:           _fullNameController.text.trim(),
+                                    age:            int.parse(_ageController.text),
+                                    gender:         _selectedGender!,
+                                    dateOfBirth:    _dobController.text,
+                                    nationalId:     _nationalIdController.text.trim(),
+                                    medicalHistory: _medicalHistoryController.text.trim().isEmpty
+                                        ? null
+                                        : _medicalHistoryController.text.trim(),
+                                  );
+                                }
+                              },
+                              size: 16,
+                              weight: FontWeight.w600,
+                              width: double.infinity,
+                              height:
+                              MediaQuery.of(context).size.height * 0.06,
+                              color: const Color(0xff474161),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:behind_silent_eyes/features/auth/domain/usecases/get_me_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
@@ -11,12 +12,15 @@ class AuthCubit extends Cubit<AuthState> {
   final LogoutUseCase       logoutUseCase;
   final PatientLoginUseCase patientLoginUseCase;
   final PatientLogoutUseCase patientLogoutUseCase;
+  final GetMeUseCase getMeUseCase;
+
 
   AuthCubit({
     required this.loginUseCase,
     required this.logoutUseCase,
     required this.patientLoginUseCase,
     required this.patientLogoutUseCase,
+    required this.getMeUseCase
   }) : super(AuthInitial());
 
   // ── Doctor / Admin Login ──────────────────────────────────────
@@ -69,6 +73,15 @@ class AuthCubit extends Cubit<AuthState> {
     result.fold(
           (failure) => emit(AuthFailure(failure.message)),
           (_)       => emit(LogoutSuccess()),
+    );
+  }
+
+  Future<void> getMe() async {
+    emit(AuthLoading());
+    final result = await getMeUseCase(NoParams());
+    result.fold(
+          (failure) => emit(AuthFailure(failure.message)),
+          (user)    => emit(AuthSuccess(user)),
     );
   }
 }
