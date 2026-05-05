@@ -13,6 +13,10 @@ import 'package:behind_silent_eyes/features/auth/domain/usecases/logout_usecase.
 import 'package:behind_silent_eyes/features/auth/domain/usecases/patient_login_usecase.dart';
 import 'package:behind_silent_eyes/features/auth/domain/usecases/patient_logout_usecase.dart';
 import 'package:behind_silent_eyes/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:behind_silent_eyes/features/patient/data/datasources/patient_remote_datasource.dart';
+import 'package:behind_silent_eyes/features/patient/data/repositories/patient_repository_impl.dart';
+import 'package:behind_silent_eyes/features/patient/domain/usecases/get_patient_profile_usecase.dart';
+import 'package:behind_silent_eyes/features/patient/presentation/cubit/patient_cubit.dart';
 import 'package:behind_silent_eyes/features/splash/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +33,7 @@ import 'features/doctor/domain/usecases/get_patients_usecase.dart';
 import 'features/doctor/domain/usecases/predict_usecase.dart';
 import 'features/doctor/domain/usecases/update_patient_usecase.dart';
 import 'features/doctor/presentation/cubit/doctor_cubit.dart';
+import 'features/patient/domain/usecases/get_patient_diagnoses_usecases.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,49 +45,58 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ── Auth ──────────────────────────────────────────────────
-    final remoteDataSource = AuthRemoteDataSource();
-    final authRepository = AuthRepositoryImpl(remoteDataSource);
+    final authRemoteDataSource = AuthRemoteDataSource();
+    final authRepository       = AuthRepositoryImpl(authRemoteDataSource);
 
     // ── Doctor ────────────────────────────────────────────────
     final doctorRemoteDataSource = DoctorRemoteDataSource();
-    final doctorRepository = DoctorRepositoryImpl(doctorRemoteDataSource);
+    final doctorRepository       = DoctorRepositoryImpl(doctorRemoteDataSource);
 
     // ── Admin ─────────────────────────────────────────────────
     final adminRemoteDataSource = AdminRemoteDataSource();
-    final adminRepository = AdminRepositoryImpl(adminRemoteDataSource);
+    final adminRepository       = AdminRepositoryImpl(adminRemoteDataSource);
+
+    // ── Patient ───────────────────────────────────────────────
+    final patientRemoteDataSource = PatientRemoteDataSource();
+    final patientRepository       = PatientRepositoryImpl(patientRemoteDataSource);
 
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthCubit>(
           create: (_) => AuthCubit(
-            loginUseCase: LoginUseCase(authRepository),
-            logoutUseCase: LogoutUseCase(authRepository),
+            loginUseCase:        LoginUseCase(authRepository),
+            logoutUseCase:       LogoutUseCase(authRepository),
             patientLoginUseCase: PatientLoginUseCase(authRepository),
             patientLogoutUseCase: PatientLogoutUseCase(authRepository),
-            getMeUseCase: GetMeUseCase(authRepository),
+            getMeUseCase:        GetMeUseCase(authRepository),
           ),
         ),
         BlocProvider<DoctorCubit>(
           create: (_) => DoctorCubit(
-            getPatientsUseCase: GetPatientsUseCase(doctorRepository),
-            addPatientUseCase: AddPatientUseCase(doctorRepository),
-            updatePatientUseCase: UpdatePatientUseCase(doctorRepository),
-            deletePatientUseCase: DeletePatientUseCase(doctorRepository),
-            predictUseCase: PredictUseCase(doctorRepository),
-            getHistoryUseCase: GetHistoryUseCase(doctorRepository),
+            getPatientsUseCase:    GetPatientsUseCase(doctorRepository),
+            addPatientUseCase:     AddPatientUseCase(doctorRepository),
+            updatePatientUseCase:  UpdatePatientUseCase(doctorRepository),
+            deletePatientUseCase:  DeletePatientUseCase(doctorRepository),
+            predictUseCase:        PredictUseCase(doctorRepository),
+            getHistoryUseCase:     GetHistoryUseCase(doctorRepository),
             generateReportUseCase: GenerateReportUseCase(doctorRepository),
           ),
         ),
         BlocProvider<AdminCubit>(
           create: (_) => AdminCubit(
-            getDoctorsUseCase: GetDoctorsUseCase(adminRepository),
-            getDoctorByIdUseCase: GetDoctorByIdUseCase(adminRepository),
-            createDoctorUseCase: CreateDoctorUseCase(adminRepository),
-            updateDoctorUseCase: UpdateDoctorUseCase(adminRepository),
-            deleteDoctorUseCase: DeleteDoctorUseCase(adminRepository),
-            updateAdminProfileUseCase:
-            UpdateAdminProfileUseCase(adminRepository),
-            getAdminStatsUseCase: GetAdminStatsUseCase(adminRepository),
+            getDoctorsUseCase:          GetDoctorsUseCase(adminRepository),
+            getDoctorByIdUseCase:       GetDoctorByIdUseCase(adminRepository),
+            createDoctorUseCase:        CreateDoctorUseCase(adminRepository),
+            updateDoctorUseCase:        UpdateDoctorUseCase(adminRepository),
+            deleteDoctorUseCase:        DeleteDoctorUseCase(adminRepository),
+            updateAdminProfileUseCase:  UpdateAdminProfileUseCase(adminRepository),
+            getAdminStatsUseCase:       GetAdminStatsUseCase(adminRepository),
+          ),
+        ),
+        BlocProvider<PatientCubit>(
+          create: (_) => PatientCubit(
+            getPatientProfileUseCase:   GetPatientProfileUseCase(patientRepository),
+            getPatientDiagnosesUseCase: GetPatientDiagnosesUseCase(patientRepository),
           ),
         ),
       ],

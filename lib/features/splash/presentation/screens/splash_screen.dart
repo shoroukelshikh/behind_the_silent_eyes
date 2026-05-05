@@ -18,7 +18,8 @@ class SplashScreen extends StatelessWidget {
     final token    = await LocalStorage.getToken();
     final userJson = await LocalStorage.getUser();
 
-    if (token != null && userJson != null) {
+    if (token != null && token.isNotEmpty &&
+        userJson != null && userJson.isNotEmpty) {
       final user = UserModel.fromJsonString(userJson);
       if (user.isAdmin)  return AdminDashboard();
       if (user.isDoctor) return DocDashboard();
@@ -28,16 +29,10 @@ class SplashScreen extends StatelessWidget {
     final patientToken = await LocalStorage.getPatientToken();
     final patientJson  = await LocalStorage.getPatient();
 
-    if (patientToken != null && patientJson != null) {
+    if (patientToken != null && patientToken.isNotEmpty &&
+        patientJson  != null && patientJson.isNotEmpty) {
       final patient = PatientModel.fromJsonString(patientJson);
-      return PatientDashboard(patient: {
-        'id':          patient.id.toString(),
-        'name':        patient.name,
-        'age':         patient.age.toString(),
-        'gender':      patient.gender,
-        'national_id': patient.nationalId,
-        'phone':       patient.phone ?? '',
-      });
+      return PatientDashboard(patient: patient);
     }
 
     // مفيش حاجة → Login
