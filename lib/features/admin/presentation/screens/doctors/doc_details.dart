@@ -1,167 +1,164 @@
 import 'package:behind_silent_eyes/core/theme/colors.dart';
+import 'package:behind_silent_eyes/features/admin/domain/entities/doctor_entity.dart';
+import 'package:behind_silent_eyes/features/admin/presentation/screens/doctors/edit_doc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../widgets/gradient_card.dart';
 
 class DocDetails extends StatelessWidget {
-  final Map<String, String> doctor;
+  final DoctorEntity doctor;
+
   const DocDetails({super.key, required this.doctor});
 
   @override
-
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Row(
-          children: [
-            Text(
-              'Back to doctors',
-              style: GoogleFonts.poppins(
-                color: Color(0xff665F5F),
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
+        scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
-        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back,
+              color: Color(0xff665F5F), size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Doctor Details',
+          style: GoogleFonts.poppins(
+            color: const Color(0xff665F5F),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit, color: Color(0xff665F5F)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => EditDoc(doctor: doctor),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: AppColors.primary,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child:
-              GradientCard(height: 480,width:335 ,children: [
-                Padding(
-                  padding: const EdgeInsets.all(11),
-                  child: Row(
-                    children: [
-                      Icon(Icons.person,color: Colors.white,),
-                      SizedBox(width: 9,),
-                      Text(doctor["name"] ?? "" , style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xffffffff),
-                      ),)
-                    ],
-                  ),
-                ),
-                Divider(
-                  thickness: 1.5,
-                  color: Color(0x66ffffff),
-                ),
-                // email
-                Padding(
-                  padding: const EdgeInsets.only(left:20 ),
-                  child: Row(
-                    children: [
-                      Image.asset('assets/images/email.png'),
-                      SizedBox(width: 25,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Email:' , style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color: Color(0x66ffffff),
-                          ),),
-                          Text(doctor["email"] ?? "" , style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xffffffff),
-                          ),)
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 25,),
-                // code
-                Padding(
-                  padding: const EdgeInsets.only(left:20 ),
-                  child: Row(
-                    children: [
-                      Image.asset('assets/images/code.png'),
-                      SizedBox(width: 25,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('code:' , style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color: Color(0x66ffffff),
-                          ),),
-                          Text(doctor["code"] ?? "", style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xffffffff),
-                          ),)
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 25,),
-                // phone
-                Padding(
-                  padding: const EdgeInsets.only(left:20 ),
-                  child: Row(
-                    children: [
-                      Image.asset('assets/images/phone.png'),
-                      SizedBox(width: 25,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('phone' , style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color: Color(0x66ffffff),
-                          ),),
-                          Text(doctor["phone"] ?? "" , style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xffffffff),
-                          ),)
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 25,),
-                // date
-                Padding(
-                  padding: const EdgeInsets.only(left:20 ),
-                  child: Row(
-                    children: [
-                      Image.asset('assets/images/date.png'),
-                      SizedBox(width: 25,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('registered on' , style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color: Color(0x66ffffff),
-                          ),),
-                          Text(doctor["registered_on"] ?? "" , style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xffffffff),
-                          ),)
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 25,),
+        height: double.infinity,
+        decoration: const BoxDecoration(gradient: AppColors.primary),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
 
-              ],),
+                // ── Avatar ───────────────────────────────────────
+                const CircleAvatar(
+                  radius: 48,
+                  backgroundColor: Color(0xFF474161),
+                  child: Icon(Icons.person, size: 52, color: Colors.white),
+                ),
+                const SizedBox(height: 12),
+
+                Text(
+                  doctor.name,
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xff474161),
+                  ),
+                ),
+                Text(
+                  doctor.role.toUpperCase(),
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: Colors.blueGrey,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // ── Info Card ────────────────────────────────────
+                GradientCard(
+                  height: 300,
+                  width: double.infinity,
+                  children: [
+                    _DetailRow(
+                        icon: Icons.badge_outlined,
+                        label: 'Doctor Code',
+                        value: doctor.doctorCode ?? '—'),
+                    const Divider(color: Colors.white24),
+                    _DetailRow(
+                        icon: Icons.email_outlined,
+                        label: 'Email',
+                        value: doctor.email),
+                    const Divider(color: Colors.white24),
+                    _DetailRow(
+                        icon: Icons.phone_outlined,
+                        label: 'Phone',
+                        value: doctor.phone ?? '—'),
+                    const Divider(color: Colors.white24),
+                    _DetailRow(
+                        icon: Icons.calendar_today_outlined,
+                        label: 'Joined',
+                        value: doctor.createdAt != null
+                            ? doctor.createdAt!.substring(0, 10)
+                            : '—'),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _DetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white70, size: 20),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.white60,
+                ),
+              ),
+              Text(
+                value,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

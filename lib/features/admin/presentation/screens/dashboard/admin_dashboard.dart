@@ -1,9 +1,8 @@
 import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/presentation/screens/doctors/doc_list.dart';
-import 'package:behind_silent_eyes/features/admin/presentation/screens/patient/patient_list.dart';
+import 'package:behind_silent_eyes/features/admin/presentation/screens/profile/admin_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../profile/admin_profile.dart';
 import 'admindashboard_page.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -15,21 +14,19 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   int _currentIndex = 0;
-  final List<Widget> _pages = [
+
+  final List<Widget> _pages = const [
     AdmindashboardPage(),
-    PatientList(),
     DocList(),
     AdminProfile(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Container(
         height: double.infinity,
-        decoration:  BoxDecoration(
-          gradient: AppColors.primary
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.primary),
         child: _pages[_currentIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -46,11 +43,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/Dashboard.png')),
@@ -58,15 +51,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/dotors.png')),
-            label: 'patients',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/dotors.png')),
             label: 'Doctors',
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/adprofile.png')),
-            label: 'profile',
+            label: 'Profile',
           ),
         ],
       ),

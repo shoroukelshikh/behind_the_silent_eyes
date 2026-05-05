@@ -20,36 +20,53 @@ class ApiErrorHandler {
   }
 
   static Failure _handleStatusCode(Response? response) {
+    final data = response?.data;
+
+    String extractMessage() {
+      if (data is Map<String, dynamic>) {
+        final message = data['message'];
+        if (message is String) return message;
+        if (message is List && message.isNotEmpty) {
+          return message.first.toString();
+        }
+      }
+
+      if (data is String) {
+        return data;
+      }
+
+      return 'Server error occurred';
+    }
+
     switch (response?.statusCode) {
       case 401:
         return const UnauthorizedFailure();
-      case 404:
-        return NotFoundFailure(
-          response?.data['message'] ?? 'Not found',
-        );
-      case 422:
-        return ValidationFailure(
-          _extractValidationMessage(response?.data),
-        );
-      default:
-        return ServerFailure(
-          response?.data['message'] ?? 'Server error occurred',
-        );
-    }
-  }
 
-  static String _extractValidationMessage(dynamic data) {
-    if (data == null) return 'Validation error';
-    // Laravel بيرجع الـ validation errors جوه errors object
-    // { "errors": { "email": ["required"] } }
-    final errors = data['errors'];
-    if (errors is Map) {
-      final firstKey = errors.keys.first;
-      final firstError = errors[firstKey];
-      if (firstError is List && firstError.isNotEmpty) {
-        return firstError.first.toString();
-      }
+      case 404:
+        return NotFoundFailure(extractMessage());
+
+      case 422:
+        return ValidationFailure(_extractValidationMessage(data));
+
+      default:
+        return ServerFailure(extractMessage());
     }
-    return data['message'] ?? 'Validation error';
   }
-}
+  static String _extractValidationMessage(dynamic data) {
+    if (data is Map<String, dynamic>) {
+      final errors = data['errors'];
+
+      if (errors is Map && errors.isNotEmpty) {
+        final firstError = errors.values.first;
+
+        if (firstError is List && firstError.isNotEmpty) {
+          return firstError.first.toString();
+        }
+      }
+
+      final message = data['message'];
+      if (message is String) return message;
+    }
+
+    return 'Validation error';
+  }}
