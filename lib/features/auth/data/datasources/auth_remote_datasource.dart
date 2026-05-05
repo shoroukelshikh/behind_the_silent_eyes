@@ -86,8 +86,7 @@ class AuthRemoteDataSource {
       // دايماً بنمسح الـ patient data حتى لو فشل الـ request
       final prefs = await LocalStorage.getPatientToken();
       if (prefs != null) {
-        await LocalStorage.savePatientToken('');
-        await LocalStorage.savePatient('');
+        await LocalStorage.clearAll();
       }
     }
   }

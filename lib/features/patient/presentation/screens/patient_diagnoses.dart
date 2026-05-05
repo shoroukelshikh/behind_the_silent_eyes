@@ -1,122 +1,192 @@
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/core/widgets/elevated_button.dart';
+import 'package:behind_silent_eyes/features/auth/domain/entities/patient_entity.dart';
+import 'package:behind_silent_eyes/features/patient/domain/entities/diagnose_entity.dart';
+import 'package:behind_silent_eyes/features/patient/presentation/cubit/patient_cubit.dart';
+import 'package:behind_silent_eyes/features/patient/presentation/cubit/patient_state.dart';
 import 'package:behind_silent_eyes/features/patient/presentation/screens/diagnose_result.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../core/theme/colors.dart';
+class PatientDiagnoses extends StatefulWidget {
+  final PatientEntity patient;
+  const PatientDiagnoses({super.key, required this.patient});
 
-class PatientDiagnoses extends StatelessWidget {
-  final Map<String, String>? patient;
+  @override
+  State<PatientDiagnoses> createState() => _PatientDiagnosesState();
+}
 
-  PatientDiagnoses({super.key, required this.patient});
-  final List<Map<String, dynamic>> diagnoses = [
-    {
-      "disease": "anemia",
-      "severity": "-",
-      "confidence": "57%",
-      "date": "2026-04-21",
-    },
-    {
-      "disease": "hypertension",
-      "severity": "High",
-      "confidence": "80%",
-      "date": "2026-04-20",
-    },
-  ];
+class _PatientDiagnosesState extends State<PatientDiagnoses> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<PatientCubit>().getDiagnoses();
+  }
+
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    final double width  = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text(
-          "back to patient details",
-          style: GoogleFonts.poppins(fontSize: 18, color: Color(0xff665F5F)),
+          'Diagnoses History',
+          style: GoogleFonts.poppins(
+              fontSize: 18, color: const Color(0xff665F5F)),
         ),
       ),
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.primary),
-        child: ListView.builder(
-          itemCount: diagnoses.length,
-          itemBuilder: (context, index) {
-            final item = diagnoses[index];
-            return Card(
-              margin: EdgeInsets.symmetric(
-                horizontal: width * 0.03,
-                vertical: height * 0.01,
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(width * 0.03),
-                child: Row(
+        child: BlocBuilder<PatientCubit, PatientState>(
+          builder: (context, state) {
+
+            // ── Loading ─────────────────────────────────────
+            if (state.isLoadingDiagnoses) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            // ── Error ───────────────────────────────────────
+            if (state.diagnosesError != null) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // LEFT SIDE (data)
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item["disease"],
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: height * 0.008),
-                          Text(
-                            "Severity: ${item["severity"]}",
-                            style: GoogleFonts.poppins(),
-                          ),
-                          Text(
-                            "Confidence: ${item["confidence"]}",
-                            style: GoogleFonts.poppins(),
-                          ),
-                          Text(
-                            "Date: ${item["date"]}",
-                            style: GoogleFonts.poppins(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // RIGHT SIDE (buttons)
-                    Column(
-                      children: [
-                        CustomButton(
-                          text: "view",
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DiagnoseResult(
-                                  diagnose: diagnoses[index],
-                                  patient: patient,
-                                ),
-                              ),
-                            );
-                          },
-                          size: 14,
-                          weight: FontWeight.w400,
-                          width: width * 0.30,
-                          height: height * 0.04,
-                        ),
-                        SizedBox(height: height * 0.01),
-                        CustomButton(
-                          text: "Download",
-                          onPressed: () {},
-                          size: 14,
-                          weight: FontWeight.w400,
-                          width: width * 0.30,
-                          height: height * 0.04,
-                        ),
-                      ],
+                    Icon(Icons.error_outline,
+                        color: Colors.white70, size: width * 0.15),
+                    SizedBox(height: height * 0.02),
+                    Text(state.diagnosesError!,
+                        style: GoogleFonts.poppins(color: Colors.white70),
+                        textAlign: TextAlign.center),
+                    SizedBox(height: height * 0.02),
+                    ElevatedButton(
+                      onPressed: () =>
+                          context.read<PatientCubit>().getDiagnoses(),
+                      child: const Text('Retry'),
                     ),
                   ],
                 ),
+              );
+            }
+
+            // ── Empty ───────────────────────────────────────
+            if (state.diagnoses == null || state.diagnoses!.isEmpty) {
+              return Center(
+                child: Text(
+                  'No diagnoses found.',
+                  style: GoogleFonts.poppins(
+                      color: Colors.white70, fontSize: 16),
+                ),
+              );
+            }
+
+            // ── Loaded ──────────────────────────────────────
+            return ListView.builder(
+              padding: EdgeInsets.only(
+                top: height * 0.12,
+                bottom: height * 0.02,
               ),
+              itemCount: state.diagnoses!.length,
+              itemBuilder: (context, index) {
+                final DiagnoseEntity item = state.diagnoses![index];
+                return _DiagnoseCard(
+                  diagnose: item,
+                  patient: widget.patient,
+                  width: width,
+                  height: height,
+                );
+              },
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+// ── Diagnose Card ──────────────────────────────────────────────
+class _DiagnoseCard extends StatelessWidget {
+  final DiagnoseEntity diagnose;
+  final PatientEntity  patient;
+  final double width;
+  final double height;
+
+  const _DiagnoseCard({
+    required this.diagnose,
+    required this.patient,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.symmetric(
+        horizontal: width * 0.04,
+        vertical: height * 0.01,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      elevation: 2,
+      child: Padding(
+        padding: EdgeInsets.all(width * 0.04),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // LEFT: info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    diagnose.diseaseType,
+                    style: GoogleFonts.poppins(
+                        fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: height * 0.006),
+                  _label('Severity',   diagnose.severity ?? '-'),
+                  _label('Confidence', diagnose.confidencePercent),
+                  _label('Date',       diagnose.createdAt ?? '-'),
+                  _label('Status',     diagnose.status),
+                ],
+              ),
+            ),
+            // RIGHT: button
+            CustomButton(
+              text: 'View',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => DiagnoseResult(
+                    diagnose: diagnose,
+                    patient: patient,
+                  ),
+                ),
+              ),
+              size: 13,
+              weight: FontWeight.w500,
+              width: width * 0.28,
+              height: height * 0.042,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _label(String key, String value) {
+    return RichText(
+      text: TextSpan(
+        style: GoogleFonts.poppins(color: Colors.black87, fontSize: 13),
+        children: [
+          TextSpan(
+              text: '$key: ',
+              style: const TextStyle(color: Colors.grey)),
+          TextSpan(text: value),
+        ],
       ),
     );
   }

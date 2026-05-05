@@ -7,6 +7,9 @@ class PatientEntity extends Equatable {
   final String gender;
   final String nationalId;
   final String? phone;
+  final String? dateOfBirth;
+  final String? medicalHistory;
+  final String? registeredOn;
 
   const PatientEntity({
     required this.id,
@@ -15,8 +18,11 @@ class PatientEntity extends Equatable {
     required this.gender,
     required this.nationalId,
     this.phone,
+    this.dateOfBirth,
+    this.medicalHistory,
+    this.registeredOn,
   });
 
   @override
-  List<Object?> get props => [id, name, age, gender, nationalId, phone];
+  List<Object?> get props => [id, name, age, gender, nationalId];
 }
