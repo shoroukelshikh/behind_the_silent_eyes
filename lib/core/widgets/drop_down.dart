@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 
 class CustomDropdownField extends StatelessWidget {
   final String label;
@@ -27,48 +28,57 @@ class CustomDropdownField extends StatelessWidget {
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: const Color(0xff665F5F),
-            fontWeight: FontWeight.w700,
+            fontSize: 13,
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         SizedBox(
           width: double.infinity,
           child: DropdownButtonFormField<String>(
             value: value,
             validator: validator,
             onChanged: onChanged,
+            dropdownColor: AppColors.surface,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: AppColors.textPrimary,
+            ),
             hint: Text(
               hintText,
               style: GoogleFonts.poppins(
-                color: const Color(0x66665F5F),
+                color: AppColors.textHint,
                 fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
               ),
             ),
             decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.surface,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.grey, width: 1.5),
+                borderSide: const BorderSide(
+                    color: AppColors.border, width: 1.5),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Color(0xcc474161), width: 2),
+                borderSide: const BorderSide(
+                    color: AppColors.accent, width: 1.5),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.red, width: 2),
+                borderSide: const BorderSide(
+                    color: AppColors.danger, width: 1.5),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.red, width: 2),
-              ),
-              hintText: hintText,
-              hintStyle: TextStyle(
-                color: const Color(0x66665F5F),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+                borderSide: const BorderSide(
+                    color: AppColors.danger, width: 1.5),
               ),
             ),
             items: items
@@ -76,7 +86,10 @@ class CustomDropdownField extends StatelessWidget {
               value: item,
               child: Text(
                 item,
-                style: GoogleFonts.poppins(fontSize: 14),
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: AppColors.textPrimary,
+                ),
               ),
             ))
                 .toList(),

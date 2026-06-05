@@ -14,7 +14,6 @@ class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   Future<Widget> _getNextScreen() async {
-    // أولاً نشوف لو في user token (doctor/admin)
     final token    = await LocalStorage.getToken();
     final userJson = await LocalStorage.getUser();
 
@@ -25,7 +24,6 @@ class SplashScreen extends StatelessWidget {
       if (user.isDoctor) return DocDashboard();
     }
 
-    // ثانياً نشوف لو في patient token
     final patientToken = await LocalStorage.getPatientToken();
     final patientJson  = await LocalStorage.getPatient();
 
@@ -35,29 +33,62 @@ class SplashScreen extends StatelessWidget {
       return PatientDashboard(patient: patient);
     }
 
-    // مفيش حاجة → Login
     return const LoginScreen();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(gradient: AppColors.primary),
-        child: ZoomIn(
+      backgroundColor: AppColors.navy,
+      body: ZoomIn(
+        duration: const Duration(seconds: 2),
+        child: FadeIn(
           duration: const Duration(seconds: 2),
-          child: FadeIn(
-            duration: const Duration(seconds: 2),
-            onFinish: (_) async {
-              final nextScreen = await _getNextScreen();
-              if (context.mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => nextScreen),
-                );
-              }
-            },
-            child: Center(child: Image.asset('assets/images/logo.png')),
+          onFinish: (_) async {
+            final nextScreen = await _getNextScreen();
+            if (context.mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => nextScreen),
+              );
+            }
+          },
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 96,
+                  height: 96,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(26),
+                  ),
+                  padding: const EdgeInsets.all(18),
+                  child: Image.asset('assets/images/logo.png'),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Behind Silent Eyes',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'AI-Powered Retinal Diagnostics',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.6),
+                    fontSize: 13,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -10,37 +10,67 @@ class SuccessNewPass extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(gradient: AppColors.primary),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height * 0.246),
-            Image(image: AssetImage("assets/images/success.png")),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.074),
-            Text(
-              "your password has been reset successfully",
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Color(0xff665F5F),
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Spacer(flex: 2),
+
+              // ── Success icon ──────────────────────────────────
+              Container(
+                width: 96,
+                height: 96,
+                decoration: BoxDecoration(
+                  color: AppColors.successBg,
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Icon(Icons.check_rounded,
+                      color: AppColors.success, size: 52),
+                ),
               ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.148),
-            CustomButton(
-              text: "Login again",
-              onPressed: () {
-                Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => LoginScreen(),)
-                );
-              },
-              size: MediaQuery.of(context).size.width * 0.039,
-              weight: FontWeight.bold,
-              width: MediaQuery.of(context).size.width * 0.85,
-              height: MediaQuery.of(context).size.height * 0.074,
-            ),
-          ],
+              const SizedBox(height: 28),
+
+              Text(
+                'Password updated!',
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Your password has been reset successfully.\nYou can now sign in with your new password.',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                  height: 1.6,
+                ),
+              ),
+
+              const Spacer(flex: 3),
+
+              CustomButton(
+                text: 'Back to sign in',
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  );
+                },
+                size: 15,
+                weight: FontWeight.w600,
+                width: double.infinity,
+                height: 50,
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );

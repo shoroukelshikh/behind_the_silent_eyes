@@ -20,7 +20,7 @@ class PatientList extends StatefulWidget {
 }
 
 class _PatientListState extends State<PatientList> {
-  List<PatientModel> allPatients    = [];
+  List<PatientModel> allPatients      = [];
   List<PatientModel> filteredPatients = [];
 
   @override
@@ -64,190 +64,109 @@ class _PatientListState extends State<PatientList> {
       },
       builder: (context, state) {
         return Scaffold(
-          body: Container(
-            decoration: BoxDecoration(gradient: AppColors.primary),
-            child: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(w * 0.02),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            if (Navigator.canPop(context)) Navigator.pop(context);
-                          },
-                          child: const Icon(Icons.arrow_back_ios_outlined),
+          backgroundColor: AppColors.background,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: Column(
+                children: [
+                  // ── Search + Add ────────────────────────────
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          if (Navigator.canPop(context)) Navigator.pop(context);
+                        },
+                        child: const Icon(Icons.arrow_back_ios_rounded,
+                            color: AppColors.textPrimary, size: 20),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: SearchField(
+                          onSearch: searchPatient,
+                          hint: 'Search by name or ID',
                         ),
-                        Expanded(
-                          child: SearchField(
-                            onSearch: searchPatient,
-                            hint: 'Search patient by name or ID',
-                          ),
-                        ),
-                        SizedBox(width: w * 0.03),
-                        ElevatedButton(
+                      ),
+                      const SizedBox(width: 10),
+                      SizedBox(
+                        height: 46,
+                        child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff474161),
-                            minimumSize: Size(w * 0.3, h * 0.04),
+                            backgroundColor: AppColors.navy,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
                           ),
                           onPressed: () async {
                             await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const AddPatient()),
+                              MaterialPageRoute(
+                                  builder: (_) => const AddPatient()),
                             );
                             if (context.mounted) {
                               context.read<DoctorCubit>().getPatients();
                             }
                           },
                           child: Text(
-                            'Add patient',
+                            'Add',
                             style: GoogleFonts.poppins(
-                                fontSize: 16, color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: h * 0.02),
-                    if (state is DoctorLoading)
-                      const Expanded(
-                          child: Center(child: CircularProgressIndicator()))
-                    else if (filteredPatients.isEmpty)
-                      Expanded(
-                        child: Center(
-                          child: Text('No patients found',
-                              style: GoogleFonts.poppins()),
-                        ),
-                      )
-                    else
-                      Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: () =>
-                              context.read<DoctorCubit>().getPatients(),
-                          child: ListView.builder(
-                            itemCount: filteredPatients.length,
-                            itemBuilder: (context, index) {
-                              final patient = filteredPatients[index];
-                              final patientMap = patient.toStringMap();
-                              return Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                margin: EdgeInsets.symmetric(
-                                    vertical: h * 0.01,
-                                    horizontal: w * 0.03),
-                                child: Padding(
-                                  padding: EdgeInsets.all(w * 0.03),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const CircleAvatar(
-                                                backgroundColor:
-                                                Color(0xff68848C),
-                                                child: Icon(Icons.person,
-                                                    color: Colors.white),
-                                              ),
-                                              SizedBox(width: w * 0.02),
-                                              Text(patient.name,
-                                                  style: const TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                      FontWeight.bold)),
-                                            ],
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.edit,
-                                                color: Colors.blueGrey),
-                                            onPressed: () async {
-                                              await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => EditPatient(
-                                                      patient: patientMap),
-                                                ),
-                                              );
-                                              if (context.mounted) {
-                                                context
-                                                    .read<DoctorCubit>()
-                                                    .getPatients();
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: h * 0.01),
-                                      _infoRow('National ID', patient.nationalId),
-                                      _infoRow('Date of birth', patient.dateOfBirth),
-                                      _infoRow('Gender', patient.gender),
-                                      _infoRow('Medical history',
-                                          patient.medicalHistory ?? '-'),
-                                      const Divider(),
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          CustomButton(
-                                            text: 'View',
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      DocPatientDetails(
-                                                          patient: patientMap),
-                                                ),
-                                              );
-                                            },
-                                            size: w * 0.035,
-                                            weight: FontWeight.w400,
-                                            width: w * 0.3,
-                                            height: h * 0.04,
-                                            color: const Color(0xff474161),
-                                          ),
-                                          CustomButton(
-                                            text: 'Diagnose',
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => Diagnose(
-                                                      patient: patientMap),
-                                                ),
-                                              );
-                                            },
-                                            size: w * 0.035,
-                                            weight: FontWeight.w400,
-                                            width: w * 0.3,
-                                            height: h * 0.04,
-                                            color: const Color(0xff0B2F60),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.delete,
-                                                color: Colors.red),
-                                            onPressed: () {
-                                              context
-                                                  .read<DoctorCubit>()
-                                                  .deletePatient(patient.id);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
-                  ],
-                ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── List ────────────────────────────────────
+                  if (state is DoctorLoading)
+                    const Expanded(
+                        child: Center(child: CircularProgressIndicator()))
+                  else if (filteredPatients.isEmpty)
+                    Expanded(
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.person_search_rounded,
+                                size: 52, color: AppColors.textHint),
+                            const SizedBox(height: 12),
+                            Text('No patients found',
+                                style: GoogleFonts.poppins(
+                                    color: AppColors.textSecondary)),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    Expanded(
+                      child: RefreshIndicator(
+                        color: AppColors.navy,
+                        onRefresh: () => context.read<DoctorCubit>().getPatients(),
+                        child: ListView.separated(
+                          itemCount: filteredPatients.length,
+                          separatorBuilder: (_, __) =>
+                          const SizedBox(height: 10),
+                          itemBuilder: (context, index) {
+                            final patient    = filteredPatients[index];
+                            final patientMap = patient.toStringMap();
+                            return _PatientCard(
+                              patient:    patient,
+                              patientMap: patientMap,
+                              w:          w,
+                              h:          h,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
@@ -260,14 +179,180 @@ class _PatientListState extends State<PatientList> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('$label: ', style: const TextStyle(fontSize: 14)),
+        Text(label,
+            style: GoogleFonts.poppins(
+                fontSize: 12, color: AppColors.textSecondary)),
         Flexible(
           child: Text(
             value,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
             textAlign: TextAlign.end,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Patient card ─────────────────────────────────────────────────
+class _PatientCard extends StatelessWidget {
+  final PatientModel patient;
+  final Map<String, String> patientMap;
+  final double w;
+  final double h;
+
+  const _PatientCard({
+    required this.patient,
+    required this.patientMap,
+    required this.w,
+    required this.h,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border, width: 1),
+      ),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header row ─────────────────────────────────────
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundColor: AppColors.accentLight,
+                child: Text(
+                  patient.name.isNotEmpty
+                      ? patient.name[0].toUpperCase()
+                      : '?',
+                  style: GoogleFonts.poppins(
+                    color: AppColors.accent,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  patient.name,
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit_outlined,
+                    color: AppColors.textSecondary, size: 18),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => EditPatient(patient: patientMap),
+                  ),
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Divider(color: AppColors.border, height: 1),
+          const SizedBox(height: 10),
+
+          // ── Info rows ──────────────────────────────────────
+          _row('National ID', patient.nationalId),
+          const SizedBox(height: 4),
+          _row('Date of birth', patient.dateOfBirth),
+          const SizedBox(height: 4),
+          _row('Gender', patient.gender),
+          const SizedBox(height: 4),
+          _row('Medical history', patient.medicalHistory ?? '—'),
+
+          const SizedBox(height: 12),
+          const Divider(color: AppColors.border, height: 1),
+          const SizedBox(height: 10),
+
+          // ── Actions ────────────────────────────────────────
+          Row(
+            children: [
+              Expanded(
+                child: CustomButton(
+                  text: 'View',
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => DocPatientDetails(patient: patientMap),
+                    ),
+                  ),
+                  size: 13,
+                  weight: FontWeight.w500,
+                  width: double.infinity,
+                  height: 38,
+                  color: AppColors.navyLight,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: CustomButton(
+                  text: 'Diagnose',
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Diagnose(patient: patientMap),
+                    ),
+                  ),
+                  size: 13,
+                  weight: FontWeight.w500,
+                  width: double.infinity,
+                  height: 38,
+                  color: AppColors.navy,
+                ),
+              ),
+              const SizedBox(width: 4),
+              IconButton(
+                icon: const Icon(Icons.delete_outline_rounded,
+                    color: AppColors.danger, size: 22),
+                onPressed: () =>
+                    context.read<DoctorCubit>().deletePatient(patient.id),
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                constraints: const BoxConstraints(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _row(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label,
+            style: GoogleFonts.poppins(
+                fontSize: 12, color: AppColors.textSecondary)),
+        Flexible(
+          child: Text(
+            value,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            textAlign: TextAlign.end,
+            style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary),
           ),
         ),
       ],

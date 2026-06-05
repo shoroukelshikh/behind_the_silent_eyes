@@ -1,8 +1,9 @@
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/doctor/presentation/screens/patients/add_patient.dart';
+import 'package:behind_silent_eyes/features/doctor/presentation/screens/patients/patient_list.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:behind_silent_eyes/features/doctor/presentation/screens/patients/patient_list.dart';
 import '../../../../admin/presentation/widgets/stat_card.dart';
 
 class DocDashboardPage extends StatelessWidget {
@@ -11,145 +12,158 @@ class DocDashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ── App Bar ────────────────────────────────────────────
         Container(
-          height: 78,
-          decoration: BoxDecoration(
-            color: Color(0xFF474161),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(40),
-              bottomRight: Radius.circular(40),
-            ),
-          ),
+          height: 64,
+          color: AppColors.navy,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Image.asset('assets/images/appbar.png'),
-              ),
+              Image.asset('assets/images/appbar.png', height: 28),
             ],
           ),
         ),
-        SizedBox(height: 21),
-        Row(
-          children: [
-            SizedBox(width: 9),
-            Text(
-              "Quick Actions:",
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                color: Color(0xff665F5F),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 19),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            InkWell(
-              onTap:() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  AddPatient(),
+
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Quick Actions ─────────────────────────────
+                Text(
+                  'Quick actions',
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                    letterSpacing: 0.3,
                   ),
-                );
-              },
-              child: Container(
-                width: 169,
-                height: 83,
-                decoration: BoxDecoration(
-                  color: Color(0x99474161),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color(0xff000000).withAlpha(50),
-                        spreadRadius: 1,
-                        offset: Offset(0, 4),
-                        blurRadius: 6
-                    ),
-                  ],
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                const SizedBox(height: 12),
+
+                Row(
                   children: [
-                    Image.asset('assets/images/Add new doctor.png'),
-                    Text(
-                      'Add new Patient',
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xffffffff),
+                    _ActionTile(
+                      label: 'Add new patient',
+                      icon: Icons.person_add_alt_1_rounded,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AddPatient()),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    _ActionTile(
+                      label: 'Start diagnose',
+                      icon: Icons.biotech_rounded,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const PatientList()),
                       ),
                     ),
                   ],
                 ),
-              ),
-            ),
-            InkWell(
-              onTap:() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  PatientList(),
+
+                const SizedBox(height: 28),
+                const Divider(color: AppColors.border, height: 1),
+                const SizedBox(height: 28),
+
+                // ── Statistics ────────────────────────────────
+                Text(
+                  'Statistics',
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                    letterSpacing: 0.3,
                   ),
-                );
-              },
-              child: Container(
-                width: 169,
-                height: 83,
-                decoration: BoxDecoration(
-                  color: Color(0x99474161),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color(0xff000000).withAlpha(50),
-                        spreadRadius: 1,
-                        offset: Offset(0, 4),
-                        blurRadius: 6
-                    ),
-                  ],
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                const SizedBox(height: 14),
+
+                Row(
                   children: [
-                    Image.asset('assets/images/Diagnose.png',color: Colors.white,),
-                    Text(
-                      'Start Diagnose',
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xffffffff),
-                      ),
+                    StatCard(
+                      text: 'Total patients',
+                      num: '5',
+                      icon: 'assets/images/total patients.png',
+                    ),
+                    const SizedBox(width: 12),
+                    StatCard(
+                      text: 'Total diagnoses',
+                      num: '7',
+                      icon: 'assets/images/total predictions.png',
                     ),
                   ],
                 ),
-              ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    StatCard(
+                      text: "Today's diagnoses",
+                      num: '2',
+                      icon: 'assets/images/todaysdiagnose.png',
+                    ),
+                    const SizedBox(width: 12),
+                    StatCard(
+                      text: 'Active cases',
+                      num: '7',
+                      icon: 'assets/images/Activecases.png',
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
-        SizedBox(height: 10,),
-        Divider(thickness: .7, color: Color(0xcc474161)),
-        SizedBox(height: 50),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            StatCard(text: "Total patients", num: "5", icon:"assets/images/total patients.png" ),
-            StatCard(text: "Total Diagnose", num: "7", icon: "assets/images/total predictions.png")
-          ],
-        ),
-        SizedBox(height: 40,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            StatCard(text: "Today's Diagnoses", num: "2", icon:"assets/images/todaysdiagnose.png" ),
-            StatCard(text: "Active cases", num: "7", icon:"assets/images/Activecases.png")
-          ],
+          ),
         ),
       ],
+    );
+  }
+}
+
+// ── Reusable action tile ──────────────────────────────────────────
+class _ActionTile extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _ActionTile({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        width: 150,
+        height: 72,
+        decoration: BoxDecoration(
+          color: AppColors.navy,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                label,
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

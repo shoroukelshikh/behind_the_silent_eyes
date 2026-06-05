@@ -1,3 +1,4 @@
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:behind_silent_eyes/features/admin/presentation/cubit/admin_cubit.dart';
 import 'package:behind_silent_eyes/features/admin/presentation/cubit/admin_state.dart';
 import 'package:behind_silent_eyes/features/admin/presentation/screens/doctors/add_doc.dart';
@@ -49,25 +50,37 @@ class _DocListState extends State<DocList> {
     });
   }
 
-  Future<void> _confirmDelete(BuildContext context, DoctorEntity doctor) async {
+  Future<void> _confirmDelete(
+      BuildContext context, DoctorEntity doctor) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Delete Doctor'),
-        content: Text('Are you sure you want to delete ${doctor.name}?'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Delete doctor',
+          style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+        ),
+        content: Text(
+          'Are you sure you want to delete ${doctor.name}? This action cannot be undone.',
+          style: GoogleFonts.poppins(
+              fontSize: 14, color: AppColors.textSecondary),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text('Cancel',
+                style: GoogleFonts.poppins(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text('Delete',
+                style: GoogleFonts.poppins(
+                    color: AppColors.danger, fontWeight: FontWeight.w600)),
           ),
         ],
       ),
     );
-
     if (confirm == true && mounted) {
       context.read<AdminCubit>().deleteDoctor(doctor.id);
     }
@@ -82,24 +95,30 @@ class _DocListState extends State<DocList> {
             _allDoctors = state.doctors;
             _filteredDoctors = List.from(state.doctors);
           });
-          // Re-apply search if there was a query
           if (_searchController.text.isNotEmpty) {
             _search(_searchController.text);
           }
         } else if (state is DoctorActionSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.green,
+              content: Text(state.message,
+                  style: GoogleFonts.poppins(fontSize: 13)),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
           );
-          // Reload list after any CRUD action
           context.read<AdminCubit>().loadDoctors();
         } else if (state is AdminFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
+              content: Text(state.message,
+                  style: GoogleFonts.poppins(fontSize: 13)),
+              backgroundColor: AppColors.danger,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
           );
         }
@@ -107,133 +126,153 @@ class _DocListState extends State<DocList> {
       builder: (context, state) {
         final isLoading = state is AdminLoading;
 
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                // ── Search + Add Button ──────────────────────────
-                Row(
-                  children: [
-                    Expanded(
-                      child: SearchField(
-                        onSearch: _search,
-                        hint: 'Search by name, code or email',
-                      ),
+        return Column(
+          children: [
+            // ── App Bar ────────────────────────────────────────────
+            Container(
+              height: 64,
+              color: AppColors.navy,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Image.asset('assets/images/appbar.png', height: 28),
+                ],
+              ),
+            ),
+
+            // ── Search + Add ───────────────────────────────────────
+            Container(
+              color: AppColors.surface,
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SearchField(
+                      onSearch: _search,
+                      hint: 'Search by name, code or email',
                     ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
+                  ),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    height: 44,
+                    child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff474161),
-                        minimumSize: const Size(120, 40),
+                        backgroundColor: AppColors.navy,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                      ),
+                      icon: const Icon(Icons.add_rounded, size: 18),
+                      label: Text(
+                        'Add',
+                        style: GoogleFonts.poppins(
+                            fontSize: 13, fontWeight: FontWeight.w600),
                       ),
                       onPressed: () async {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(builder: (_) => const AddDoc()),
                         );
-                        // Always reload after returning from Add
-                        if (mounted) {
-                          context.read<AdminCubit>().loadDoctors();
-                        }
+                        if (mounted) context.read<AdminCubit>().loadDoctors();
                       },
-                      child: Text(
-                        'Add Doctor',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1, color: AppColors.border),
+
+            // ── List / Loading / Empty ─────────────────────────────
+            Expanded(
+              child: isLoading
+                  ? const Center(
+                  child: CircularProgressIndicator(color: AppColors.accent))
+                  : _filteredDoctors.isEmpty
+                  ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        color: AppColors.accentLight,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.people_outline_rounded,
+                          color: AppColors.accent, size: 34),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      _allDoctors.isEmpty
+                          ? 'No doctors yet'
+                          : 'No results found',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      _allDoctors.isEmpty
+                          ? 'Tap "Add" to create the first doctor.'
+                          : 'Try a different search term.',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-
-                // ── Loading / Empty / List ───────────────────────
-                if (isLoading)
-                  const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFF474161),
-                      ),
-                    ),
-                  )
-                else if (_filteredDoctors.isEmpty)
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.person_search,
-                            size: 64,
-                            color: Color(0xFF474161),
+              )
+                  : RefreshIndicator(
+                color: AppColors.accent,
+                onRefresh: () async =>
+                    context.read<AdminCubit>().loadDoctors(),
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _filteredDoctors.length,
+                  separatorBuilder: (_, __) =>
+                  const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final doctor = _filteredDoctors[index];
+                    return _DoctorCard(
+                      doctor: doctor,
+                      onEdit: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => EditDoc(doctor: doctor),
                           ),
-                          const SizedBox(height: 12),
-                          Text(
-                            _allDoctors.isEmpty
-                                ? 'No doctors yet.\nTap "Add Doctor" to create one.'
-                                : 'No doctors match your search.',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
-                              color: const Color(0xFF474161),
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
+                        );
+                        if (mounted)
+                          context.read<AdminCubit>().loadDoctors();
+                      },
+                      onView: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => DocDetails(doctor: doctor),
+                        ),
                       ),
-                    ),
-                  )
-                else
-                  Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async =>
-                          context.read<AdminCubit>().loadDoctors(),
-                      child: ListView.builder(
-                        itemCount: _filteredDoctors.length,
-                        itemBuilder: (context, index) {
-                          final doctor = _filteredDoctors[index];
-                          return _DoctorCard(
-                            doctor: doctor,
-                            onEdit: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => EditDoc(doctor: doctor),
-                                ),
-                              );
-                              if (mounted) {
-                                context.read<AdminCubit>().loadDoctors();
-                              }
-                            },
-                            onView: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      DocDetails(doctor: doctor),
-                                ),
-                              );
-                            },
-                            onDelete: () => _confirmDelete(context, doctor),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-              ],
+                      onDelete: () =>
+                          _confirmDelete(context, doctor),
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
+          ],
         );
       },
     );
   }
 }
 
-// ── Doctor Card Widget ─────────────────────────────────────────
+// ── Doctor Card ────────────────────────────────────────────────────
 class _DoctorCard extends StatelessWidget {
   final DoctorEntity doctor;
   final VoidCallback onEdit;
@@ -249,101 +288,151 @@ class _DoctorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      color: Colors.white,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Row 1: Avatar + Name + Edit ───────────────────
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      backgroundColor: Color(0xff68848C),
-                      child: Icon(Icons.person, color: Colors.white),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      doctor.name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.blueGrey),
-                  onPressed: onEdit,
-                ),
-              ],
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border, width: 1),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Avatar ──────────────────────────────────────────
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.accentLight,
+              shape: BoxShape.circle,
             ),
-            const SizedBox(height: 6),
+            child: const Icon(Icons.person_rounded,
+                color: AppColors.accent, size: 24),
+          ),
+          const SizedBox(width: 14),
 
-            // ── Doctor Code ───────────────────────────────────
-            _InfoRow(label: 'Doctor Code', value: doctor.doctorCode ?? '—'),
-            const SizedBox(height: 4),
-            _InfoRow(label: 'Email', value: doctor.email),
-            const SizedBox(height: 4),
-            _InfoRow(label: 'Phone', value: doctor.phone ?? '—'),
-
-            const Divider(height: 20),
-
-            // ── Actions Row ───────────────────────────────────
-            Row(
+          // ── Info ────────────────────────────────────────────
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: onView,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff0B2F60),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'View Details',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                Text(
+                  doctor.name,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.red),
-                  onPressed: onDelete,
-                ),
+                const SizedBox(height: 4),
+                if (doctor.doctorCode != null)
+                  _Tag(label: doctor.doctorCode!),
+                const SizedBox(height: 6),
+                _MetaRow(
+                    icon: Icons.email_outlined, text: doctor.email),
+                if (doctor.phone != null && doctor.phone!.isNotEmpty)
+                  _MetaRow(
+                      icon: Icons.phone_outlined, text: doctor.phone!),
               ],
             ),
-          ],
+          ),
+
+          // ── Actions ─────────────────────────────────────────
+          Column(
+            children: [
+              _IconBtn(
+                  icon: Icons.remove_red_eye_outlined,
+                  color: AppColors.accent,
+                  onTap: onView),
+              const SizedBox(height: 6),
+              _IconBtn(
+                  icon: Icons.edit_outlined,
+                  color: AppColors.textSecondary,
+                  onTap: onEdit),
+              const SizedBox(height: 6),
+              _IconBtn(
+                  icon: Icons.delete_outline_rounded,
+                  color: AppColors.danger,
+                  onTap: onDelete),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Tag extends StatelessWidget {
+  final String label;
+  const _Tag({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppColors.accentLight,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.poppins(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: AppColors.accent,
         ),
       ),
     );
   }
 }
 
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-  const _InfoRow({required this.label, required this.value});
+class _MetaRow extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  const _MetaRow({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: const TextStyle(fontSize: 13, color: Colors.grey)),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2),
+      child: Row(
+        children: [
+          Icon(icon, size: 13, color: AppColors.textSecondary),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+              text,
+              style: GoogleFonts.poppins(
+                  fontSize: 12, color: AppColors.textSecondary),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IconBtn extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+  const _IconBtn(
+      {required this.icon, required this.color, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(8),
         ),
-      ],
+        child: Icon(icon, color: color, size: 17),
+      ),
     );
   }
 }

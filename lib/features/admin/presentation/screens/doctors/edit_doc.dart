@@ -67,141 +67,182 @@ class _EditDocState extends State<EditDoc> {
       listener: (context, state) {
         if (state is DoctorActionSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Doctor updated successfully'),
-              backgroundColor: Colors.green,
+            SnackBar(
+              content: Text('Doctor updated successfully',
+                  style: GoogleFonts.poppins(fontSize: 13)),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
           );
           Navigator.pop(context, true);
         } else if (state is AdminFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
+              content: Text(state.message,
+                  style: GoogleFonts.poppins(fontSize: 13)),
+              backgroundColor: AppColors.danger,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        extendBodyBehindAppBar: true,
+        backgroundColor: AppColors.background,
         appBar: AppBar(
+          backgroundColor: AppColors.navy,
+          elevation: 0,
           scrolledUnderElevation: 0,
-          backgroundColor: Colors.transparent,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back,
-                color: Color(0xff665F5F), size: 30),
+            icon: const Icon(Icons.arrow_back_ios_rounded,
+                color: Colors.white, size: 20),
             onPressed: () => Navigator.pop(context),
           ),
+          title: Text(
+            'Edit doctor',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
         ),
-        body: Container(
-          height: double.infinity,
-          decoration: const BoxDecoration(gradient: AppColors.primary),
-          child: BlocBuilder<AdminCubit, AdminState>(
-            builder: (context, state) {
-              final isLoading = state is AdminLoading;
-              return SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 100, 16, 32),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Edit Doctor Information',
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          color: const Color(0xff665F5F),
-                          fontWeight: FontWeight.bold,
+        body: BlocBuilder<AdminCubit, AdminState>(
+          builder: (context, state) {
+            final isLoading = state is AdminLoading;
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Header ──────────────────────────────────
+                    Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: AppColors.accentLight,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.person_rounded,
+                              color: AppColors.accent, size: 24),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 24),
-
-                      CustomTextField(
-                        label: 'Doctor Code',
-                        hintText: 'e.g. DOC-0001',
-                        controller: _codeController,
-                        validator: (v) =>
-                        (v == null || v.isEmpty) ? 'Code required' : null,
-                      ),
-                      const SizedBox(height: 16),
-
-                      CustomTextField(
-                        label: 'Full Name',
-                        hintText: 'Enter full name',
-                        controller: _nameController,
-                        validator: (v) {
-                          if (v == null || v.trim().isEmpty) {
-                            return 'Name is required';
-                          }
-                          if (v.trim().length < 3) {
-                            return 'Name must be at least 3 characters';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-
-                      CustomTextField(
-                        label: 'Email',
-                        hintText: 'doctor@example.com',
-                        controller: _emailController,
-                        validator: (v) {
-                          if (v == null || v.isEmpty) return 'Email required';
-                          if (!v.contains('@')) return 'Enter a valid email';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-
-                      CustomTextField(
-                        label: 'Phone',
-                        hintText: '01XXXXXXXXX',
-                        controller: _phoneController,
-                        validator: (v) {
-                          if (v == null || v.isEmpty) return 'Phone required';
-                          if (v.length < 10) return 'Min 10 digits';
-                          if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
-                            return 'Digits only';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-
-                      CustomTextField(
-                        label: 'New Password (leave blank to keep current)',
-                        hintText: 'Min 6 characters',
-                        controller: _passwordController,
-                        obscureText: _obscurePassword,
-                        suffixIcon: IconButton(
-                          icon: Icon(_obscurePassword
-                              ? Icons.visibility_off
-                              : Icons.visibility),
-                          onPressed: () => setState(
-                                  () => _obscurePassword = !_obscurePassword),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.doctor.name,
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            Text(
+                              widget.doctor.doctorCode ?? '',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
                         ),
-                        validator: (v) {
-                          if (v != null && v.isNotEmpty && v.length < 6) {
-                            return 'Min 6 characters';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 40),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    const Divider(color: AppColors.border),
+                    const SizedBox(height: 20),
 
-                      Row(
-                        children: [
-                          Expanded(
+                    // ── Fields ──────────────────────────────────
+                    CustomTextField(
+                      label: 'Doctor code',
+                      hintText: 'e.g. DOC-0001',
+                      controller: _codeController,
+                      validator: (v) =>
+                      (v == null || v.isEmpty) ? 'Code required' : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    CustomTextField(
+                      label: 'Full name',
+                      hintText: 'Enter full name',
+                      controller: _nameController,
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty)
+                          return 'Name is required';
+                        if (v.trim().length < 3)
+                          return 'Name must be at least 3 characters';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    CustomTextField(
+                      label: 'Email',
+                      hintText: 'doctor@example.com',
+                      controller: _emailController,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return 'Email required';
+                        if (!v.contains('@')) return 'Enter a valid email';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    CustomTextField(
+                      label: 'Phone',
+                      hintText: '01XXXXXXXXX',
+                      controller: _phoneController,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return 'Phone required';
+                        if (v.length < 10) return 'Min 10 digits';
+                        if (!RegExp(r'^[0-9]+$').hasMatch(v))
+                          return 'Digits only';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    CustomTextField(
+                      label: 'New password',
+                      hintText: 'Leave blank to keep current',
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      suffixIcon: IconButton(
+                        icon: Icon(_obscurePassword
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined),
+                        onPressed: () => setState(
+                                () => _obscurePassword = !_obscurePassword),
+                      ),
+                      validator: (v) {
+                        if (v != null && v.isNotEmpty && v.length < 6)
+                          return 'Min 6 characters';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 36),
+
+                    // ── Buttons ─────────────────────────────────
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 50,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xcc474161),
+                                backgroundColor: AppColors.navy,
                                 foregroundColor: Colors.white,
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 14),
+                                elevation: 0,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                               onPressed: isLoading ? null : _submit,
@@ -214,35 +255,47 @@ class _EditDocState extends State<EditDoc> {
                                   color: Colors.white,
                                 ),
                               )
-                                  : const Text('Update'),
+                                  : Text(
+                                'Save changes',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: const Color(0xcc474161),
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: SizedBox(
+                            height: 50,
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.textSecondary,
+                                side: const BorderSide(
+                                    color: AppColors.borderDark),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: const BorderSide(
-                                      color: Color(0xcc474161)),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                               onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel'),
+                              child: Text(
+                                'Cancel',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

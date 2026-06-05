@@ -34,7 +34,6 @@ class _PatientLoginScreenState extends State<PatientLoginScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              // Pass PatientEntity directly — no Map conversion needed
               builder: (_) => BlocProvider.value(
                 value: context.read<PatientCubit>(),
                 child: PatientDashboard(patient: state.patient),
@@ -48,47 +47,84 @@ class _PatientLoginScreenState extends State<PatientLoginScreen> {
         }
       },
       child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(gradient: AppColors.primary),
+        backgroundColor: AppColors.background,
+        body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/logo.png',
-                    width:  MediaQuery.of(context).size.width * 0.24,
-                    height: MediaQuery.of(context).size.width * 0.24,
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+                  // ── Logo ──────────────────────────────────────
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.85,
-                    padding: EdgeInsets.all(
-                        MediaQuery.of(context).size.width * 0.05),
+                    width: 72,
+                    height: 72,
                     decoration: BoxDecoration(
-                      color: const Color(0xffDAE0E8).withOpacity(0.7),
+                      color: AppColors.navy,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white70),
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: 40,
+                        height: 40,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Behind Silent Eyes',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'AI-Powered Retinal Diagnostics',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 36),
+
+                  // ── Card ──────────────────────────────────────
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.border, width: 1),
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Patient Login',
+                          'Patient sign in',
                           style: GoogleFonts.poppins(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xff665F5F),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
                           ),
                         ),
-                        SizedBox(
-                            height:
-                            MediaQuery.of(context).size.height * 0.025),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Enter your national ID to access your records.',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
                         Form(
                           key: _formKey,
                           child: CustomTextField(
                             label: 'National ID',
-                            hintText: 'Enter your national ID',
+                            hintText: 'Enter your 14-digit national ID',
                             controller: nationalIdController,
                             validator: (value) {
                               if (value == null || value.isEmpty)
@@ -101,18 +137,17 @@ class _PatientLoginScreenState extends State<PatientLoginScreen> {
                             },
                           ),
                         ),
-                        SizedBox(
-                            height:
-                            MediaQuery.of(context).size.height * 0.025),
+                        const SizedBox(height: 24),
                         BlocBuilder<AuthCubit, AuthState>(
                           builder: (context, state) {
                             return SizedBox(
                               width: double.infinity,
-                              height:
-                              MediaQuery.of(context).size.height * 0.055,
+                              height: 50,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xff474161),
+                                  backgroundColor: AppColors.navy,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -129,19 +164,66 @@ class _PatientLoginScreenState extends State<PatientLoginScreen> {
                                   }
                                 },
                                 child: state is AuthLoading
-                                    ? const CircularProgressIndicator(
-                                    color: Colors.white, strokeWidth: 2)
-                                    : Text(
-                                  'Login',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
+                                    ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                    : Text(
+                                  'Sign in',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
                             );
                           },
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            const Expanded(child: Divider(color: AppColors.border)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(
+                                'or',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ),
+                            const Expanded(child: Divider(color: AppColors.border)),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Not patient? ',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Text(
+                                'Sign in here',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: AppColors.accent,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

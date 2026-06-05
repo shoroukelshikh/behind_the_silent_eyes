@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -18,7 +19,7 @@ class CustomButton extends StatelessWidget {
     required this.weight,
     required this.width,
     required this.height,
-    this.color = const Color(0xff474161),
+    this.color = AppColors.navy,
   });
 
   @override
@@ -30,6 +31,8 @@ class CustomButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
+          foregroundColor: Colors.white,
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -38,7 +41,7 @@ class CustomButton extends StatelessWidget {
           text,
           style: GoogleFonts.poppins(
             fontSize: size,
-            fontWeight: weight,
+            fontWeight: FontWeight.w600,
             color: Colors.white,
           ),
         ),

@@ -1,59 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 
 class StatCard extends StatelessWidget {
   final String text;
   final String num;
   final String icon;
-  const StatCard({super.key,
+
+  const StatCard({
+    super.key,
     required this.text,
     required this.num,
-    required this.icon
+    required this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 172,
-      height: 88 ,
+      width: 160,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color:Color(0x90FFFFFF),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xff000000).withAlpha(20),
-            offset: Offset(0,4 ),
-            spreadRadius: 5,
-            blurRadius: 5
-          )
-        ]
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(text,style: GoogleFonts.poppins(
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff665F5F)
-              ),),
-              Text(num,style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color(0xff000000)
-              ),),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  num,
+                  style: GoogleFonts.poppins(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    height: 1.1,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  text,
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
           ),
-          Image.asset(icon,color: Color(0xff000000),width: 28,height: 35,),
+          const SizedBox(width: 8),
+          Image.asset(
+            icon,
+            color: AppColors.navy,
+            width: 24,
+            height: 24,
+          ),
         ],
       ),
-    ) ;
+    );
   }
 }
-
-
-
-
-

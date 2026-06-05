@@ -5,94 +5,107 @@ import 'package:google_fonts/google_fonts.dart';
 
 class SendCode extends StatefulWidget {
   final String email;
-  const SendCode({super.key,required this.email});
+  const SendCode({super.key, required this.email});
 
   @override
   State<SendCode> createState() => _SendCodeState();
 }
 
 class _SendCodeState extends State<SendCode> {
-
   List<TextEditingController> controllers =
   List.generate(5, (index) => TextEditingController());
-
-  List<FocusNode> focusNodes =
-  List.generate(5, (index) => FocusNode());
+  List<FocusNode> focusNodes = List.generate(5, (index) => FocusNode());
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    for (var c in controllers) {
-      c.dispose();
-    }
-    for (var f in focusNodes) {
-      f.dispose();
-    }
+    for (var c in controllers) c.dispose();
+    for (var f in focusNodes) f.dispose();
     super.dispose();
   }
-  final _formKey = GlobalKey<FormState>();
-  String getCode() {
-    return controllers.map((e) => e.text).join();
-  }
+
+  String getCode() => controllers.map((e) => e.text).join();
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-        decoration: BoxDecoration(
-          gradient: AppColors.primary,
-        ),
-        child: SafeArea(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 16),
+              // ── Back ──────────────────────────────────────────
               GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(Icons.arrow_back_ios),
+                onTap: () => Navigator.pop(context),
+                child: const Icon(Icons.arrow_back_ios_rounded,
+                    color: AppColors.textPrimary, size: 20),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-              Text(
-                "Check your email",
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff665F5F),
+              const SizedBox(height: 32),
+
+              // ── Icon ─────────────────────────────────────────
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: AppColors.accentLight,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Center(
+                  child: Icon(Icons.mark_email_read_outlined,
+                      color: AppColors.accent, size: 26),
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.012),
+              const SizedBox(height: 20),
+
               Text(
-                "We've sent a 5-digit code to your email",
+                'Check your email',
                 style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Color(0xff989898),
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.049),
+              const SizedBox(height: 8),
+              Text(
+                "We sent a 5-digit code to ${widget.email}",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 36),
+
+              // ── OTP fields ────────────────────────────────────
               Form(
                 key: _formKey,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(5, (index) {
                     return SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.13,
-                      height: MediaQuery.of(context).size.height * 0.074,
+                      width: (w - 56 - 40) / 5,
+                      height: 56,
                       child: TextFormField(
                         controller: controllers[index],
                         focusNode: focusNodes[index],
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "";
-                          }
-                          if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                            return "";
-                          }
+                          if (value == null || value.isEmpty) return '';
+                          if (!RegExp(r'^[0-9]+$').hasMatch(value)) return '';
                           return null;
                         },
                         textAlign: TextAlign.center,
                         maxLength: 1,
                         keyboardType: TextInputType.number,
+                        style: GoogleFonts.poppins(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
                         onChanged: (value) {
                           if (value.isNotEmpty) {
                             if (index < 4) {
@@ -107,12 +120,29 @@ class _SendCodeState extends State<SendCode> {
                           }
                         },
                         decoration: InputDecoration(
-                          counterText: "",
+                          counterText: '',
                           filled: true,
-                          fillColor: Colors.white,
-                      
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                          fillColor: AppColors.surface,
+                          contentPadding: EdgeInsets.zero,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                                color: AppColors.border, width: 1.5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                                color: AppColors.accent, width: 2),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                                color: AppColors.danger, width: 1.5),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                                color: AppColors.danger, width: 2),
                           ),
                         ),
                       ),
@@ -120,66 +150,72 @@ class _SendCodeState extends State<SendCode> {
                   }),
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.049),
+              const SizedBox(height: 36),
+
+              // ── Verify button ─────────────────────────────────
               SizedBox(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.067,
-                child: ElevatedButton (
+                height: 50,
+                child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF474161),
+                    backgroundColor: AppColors.navy,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()){
-                      String code = getCode();
-                      // هنا بقى التحقق الحقيقي من الكود (API مثلاً)
+                    if (_formKey.currentState!.validate()) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ResetPass(),
-                        ),
-                      );}else{
+                        MaterialPageRoute(builder: (context) => ResetPass()),
+                      );
+                    } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Please enter valid code"),backgroundColor:Color(0xFF474161),),
+                        const SnackBar(
+                          content: Text('Please enter the full code'),
+                          backgroundColor: AppColors.navy,
+                        ),
                       );
                     }
-},
-                 child: Text(
-                    "Verify Code",
+                  },
+                  child: Text(
+                    'Verify code',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Haven't got the email yet? ",
+              const SizedBox(height: 24),
+
+              // ── Resend ────────────────────────────────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Didn't receive it? ",
+                    style: GoogleFonts.poppins(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text(
+                      'Resend code',
                       style: GoogleFonts.poppins(
-                        color: Color(0xff989898),
+                        color: AppColors.accent,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        "Resend email",
-                        style: GoogleFonts.poppins(
-                          color: Color(0xff0400FF),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
+                  ),
+                ],
+              ),
             ],
           ),
         ),
