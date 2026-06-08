@@ -61,7 +61,7 @@ class SplashScreen extends StatelessWidget {
                   width: 96,
                   height: 96,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(26),
                   ),
                   padding: const EdgeInsets.all(18),

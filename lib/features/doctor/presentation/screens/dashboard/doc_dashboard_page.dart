@@ -54,7 +54,7 @@ class DocDashboardPage extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => const AddPatient()),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 50),
                     _ActionTile(
                       label: 'Start diagnose',
                       icon: Icons.biotech_rounded,
@@ -89,7 +89,7 @@ class DocDashboardPage extends StatelessWidget {
                       num: '5',
                       icon: 'assets/images/total patients.png',
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 30),
                     StatCard(
                       text: 'Total diagnoses',
                       num: '7',
@@ -105,7 +105,7 @@ class DocDashboardPage extends StatelessWidget {
                       num: '2',
                       icon: 'assets/images/todaysdiagnose.png',
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 30),
                     StatCard(
                       text: 'Active cases',
                       num: '7',

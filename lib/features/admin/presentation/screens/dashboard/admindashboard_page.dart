@@ -181,7 +181,7 @@ class _AdmindashboardPageState extends State<AdmindashboardPage> {
                           num: totalPatients.toString(),
                           icon: 'assets/images/total patients.png',
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 30),
                         StatCard(
                           text: 'Total Predictions',
                           num: totalPredictions.toString(),
