@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../admin/presentation/widgets/gradient_card.dart';
-
 class PatientDashboard extends StatefulWidget {
   final PatientEntity patient;
   const PatientDashboard({super.key, required this.patient});
@@ -28,267 +26,421 @@ class _PatientDashboardState extends State<PatientDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final double width  = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black),
-            tooltip: 'Logout',
-            onPressed: () async {
-              await context.read<AuthCubit>().patientLogout();
-              if (context.mounted) {
-                Navigator.of(context).popUntil((r) => r.isFirst);
-              }
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: BoxDecoration(gradient: AppColors.primary),
-        child: BlocBuilder<PatientCubit, PatientState>(
-          builder: (context, state) {
-            final PatientEntity patient = state.patient ?? widget.patient;
+      backgroundColor: AppColors.background,
+      body: BlocBuilder<PatientCubit, PatientState>(
+        builder: (context, state) {
+          final PatientEntity patient = state.patient ?? widget.patient;
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.only(
-                  top: height * 0.12, bottom: height * 0.04),
-              child: Column(
-                children: [
-                  // ── Profile Card ────────────────────────────
-                  GradientCard(
-                    width: width * .88,
-                    children: [
-                      _cardHeader(width, height, Icons.person, patient.name),
-                      _divider(width),
-
-                      if (state.isLoadingProfile)
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: height * 0.03),
-                          child: const Center(child: CircularProgressIndicator()),
-                        )
-                      else if (state.profileError != null)
-                        Padding(
-                          padding: EdgeInsets.all(width * 0.04),
-                          child: Column(
-                            children: [
-                              Text(state.profileError!,
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.white70)),
-                              TextButton(
-                                onPressed: () =>
-                                    context.read<PatientCubit>().getProfile(),
-                                child: const Text('Retry',
-                                    style: TextStyle(color: Colors.white)),
+          return CustomScrollView(
+            slivers: [
+              // ── App Bar ──────────────────────────────────────────
+              SliverAppBar(
+                expandedHeight: 160,
+                pinned: true,
+                backgroundColor: AppColors.navy,
+                elevation: 0,
+                automaticallyImplyLeading: false,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.logout_rounded,
+                        color: Colors.white, size: 22),
+                    tooltip: 'Logout',
+                    onPressed: () async {
+                      await context.read<AuthCubit>().patientLogout();
+                      if (context.mounted) {
+                        Navigator.of(context).popUntil((r) => r.isFirst);
+                      }
+                    },
+                  ),
+                ],
+                flexibleSpace: FlexibleSpaceBar(
+                  collapseMode: CollapseMode.pin,
+                  background: Container(
+                    color: AppColors.navy,
+                    padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.15),
+                                shape: BoxShape.circle,
                               ),
-                            ],
-                          ),
-                        )
-                      else ...[
-                          _infoRow(width, height,
-                              icon: const Icon(Icons.badge_outlined,
-                                  color: Colors.white, size: 24),
+                              child: const Center(
+                                child: Icon(Icons.person_rounded,
+                                    color: Colors.white, size: 26),
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Welcome back',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
+                                    color: Colors.white.withOpacity(0.65),
+                                  ),
+                                ),
+                                Text(
+                                  patient.name,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              SliverPadding(
+                padding: const EdgeInsets.all(20),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // ── Profile Card ──────────────────────────────
+                    _SectionCard(
+                      title: 'Profile information',
+                      icon: Icons.person_outline_rounded,
+                      child: state.isLoadingProfile
+                          ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                                color: AppColors.accent)),
+                      )
+                          : state.profileError != null
+                          ? _ErrorRetry(
+                        message: state.profileError!,
+                        onRetry: () =>
+                            context.read<PatientCubit>().getProfile(),
+                      )
+                          : Column(
+                        children: [
+                          _InfoTile(
+                              icon: Icons.badge_outlined,
                               label: 'National ID',
                               value: patient.nationalId),
-                          _infoRow(width, height,
-                              icon: const Icon(Icons.cake_outlined,
-                                  color: Colors.white, size: 24),
+                          _InfoTile(
+                              icon: Icons.cake_outlined,
                               label: 'Date of Birth',
                               value: patient.dateOfBirth ?? '-'),
-                          _infoRow(width, height,
-                              icon: const Icon(Icons.transgender,
-                                  color: Colors.white, size: 24),
+                          _InfoTile(
+                              icon: Icons.transgender_rounded,
                               label: 'Gender',
                               value: patient.gender),
-                          _infoRow(width, height,
-                              icon: const Icon(Icons.phone_outlined,
-                                  color: Colors.white, size: 24),
+                          _InfoTile(
+                              icon: Icons.phone_outlined,
                               label: 'Phone',
                               value: patient.phone ?? '-'),
-                          _infoRow(width, height,
-                              icon: const Icon(Icons.calendar_today_outlined,
-                                  color: Colors.white, size: 24),
+                          _InfoTile(
+                              icon: Icons.calendar_today_outlined,
                               label: 'Registered On',
                               value: patient.registeredOn ?? '-'),
                           if (patient.medicalHistory != null &&
                               patient.medicalHistory!.isNotEmpty)
-                            _infoRow(width, height,
-                                icon: const Icon(
-                                    Icons.medical_information_outlined,
-                                    color: Colors.white,
-                                    size: 24),
+                            _InfoTile(
+                                icon:
+                                Icons.medical_information_outlined,
                                 label: 'Medical History',
                                 value: patient.medicalHistory!),
                         ],
+                      ),
+                    ),
 
-                      SizedBox(height: height * .015),
-                    ],
-                  ),
+                    const SizedBox(height: 16),
 
-                  SizedBox(height: height * 0.022),
-
-                  // ── Diagnoses Preview Card ───────────────────
-                  GradientCard(
-                    width: width * .88,
-                    children: [
-                      _cardHeader(
-                          width, height, Icons.history, 'Diagnoses History'),
-                      _divider(width),
-
-                      if (state.isLoadingDiagnoses)
-                        Padding(
-                          padding:
-                          EdgeInsets.symmetric(vertical: height * 0.03),
-                          child: const Center(
-                              child: CircularProgressIndicator()),
-                        )
-                      else if (state.diagnosesError != null)
-                        Padding(
-                          padding: EdgeInsets.all(width * 0.04),
-                          child: Column(
-                            children: [
-                              Text(state.diagnosesError!,
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.white70)),
-                              TextButton(
-                                onPressed: () =>
-                                    context.read<PatientCubit>().getDiagnoses(),
-                                child: const Text('Retry',
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                            ],
+                    // ── Diagnoses Preview Card ────────────────────
+                    _SectionCard(
+                      title: 'Diagnoses history',
+                      icon: Icons.history_rounded,
+                      trailing: state.diagnoses != null &&
+                          state.diagnoses!.isNotEmpty
+                          ? GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                PatientDiagnoses(patient: patient),
                           ),
-                        )
-                      else if (state.diagnoses != null) ...[
-                          if (state.diagnoses!.isEmpty)
-                            Padding(
-                              padding: EdgeInsets.all(width * 0.04),
-                              child: Text('No diagnoses yet.',
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.white70)),
-                            )
-                          else ...[
-                            _previewRow(width, height, 'Disease type',
-                                state.diagnoses!.first.diseaseType),
-                            _previewRow(width, height, 'Date',
-                                state.diagnoses!.first.createdAt ?? '-'),
-                            _previewRow(width, height, 'Severity',
-                                state.diagnoses!.first.severity ?? '-'),
-                            _previewRow(width, height, 'Confidence',
-                                state.diagnoses!.first.confidencePercent),
-                            SizedBox(height: height * .015),
-                            Center(
-                              child: InkWell(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        PatientDiagnoses(patient: patient),
-                                  ),
-                                ),
-                                child: Text(
-                                  'view all',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                        ),
+                        child: Text(
+                          'View all',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            color: AppColors.accent,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      )
+                          : null,
+                      child: state.isLoadingDiagnoses
+                          ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                                color: AppColors.accent)),
+                      )
+                          : state.diagnosesError != null
+                          ? _ErrorRetry(
+                        message: state.diagnosesError!,
+                        onRetry: () => context
+                            .read<PatientCubit>()
+                            .getDiagnoses(),
+                      )
+                          : (state.diagnoses == null ||
+                          state.diagnoses!.isEmpty)
+                          ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 24),
+                        child: Center(
+                          child: Text(
+                            'No diagnoses yet.',
+                            style: GoogleFonts.poppins(
+                                color: AppColors.textSecondary,
+                                fontSize: 14),
+                          ),
+                        ),
+                      )
+                          : Column(
+                        children: [
+                          _PreviewTile(
+                            label: 'Disease type',
+                            value: state
+                                .diagnoses!.first.diseaseType,
+                          ),
+                          _PreviewTile(
+                            label: 'Date',
+                            value: state.diagnoses!.first
+                                .createdAt ??
+                                '-',
+                          ),
+                          _PreviewTile(
+                            label: 'Severity',
+                            value: state.diagnoses!.first
+                                .severity ??
+                                '-',
+                          ),
+                          _PreviewTile(
+                            label: 'Confidence',
+                            value: state
+                                .diagnoses!.first.confidencePercent,
+                            isLast: true,
+                          ),
                         ],
+                      ),
+                    ),
 
-                      SizedBox(height: height * .015),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  // ── Helpers ────────────────────────────────────────────────────
-  Widget _cardHeader(double w, double h, IconData icon, String title) {
-    return Padding(
-      padding:
-      EdgeInsets.symmetric(horizontal: w * 0.05, vertical: h * 0.018),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white),
-          SizedBox(width: w * 0.02),
-          Text(title,
-              style: GoogleFonts.poppins(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
-        ],
-      ),
-    );
-  }
-
-  Widget _divider(double w) =>
-      Divider(thickness: w * .003, color: const Color(0x66ffffff));
-
-  Widget _infoRow(double w, double h,
-      {required Widget icon,
-        required String label,
-        required String value}) {
-    return Padding(
-      padding: EdgeInsets.only(left: w * 0.05, bottom: h * 0.018),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          icon,
-          SizedBox(width: w * .04),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label,
-                  style: GoogleFonts.poppins(
-                      fontSize: 14, color: const Color(0x99ffffff))),
-              SizedBox(
-                width: w * 0.65,
-                child: Text(value,
-                    style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                    softWrap: true),
+                    const SizedBox(height: 24),
+                  ]),
+                ),
               ),
             ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ── Section Card ─────────────────────────────────────────────────
+class _SectionCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Widget child;
+  final Widget? trailing;
+
+  const _SectionCard({
+    required this.title,
+    required this.icon,
+    required this.child,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: AppColors.accentLight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: AppColors.accent, size: 17),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+                if (trailing != null) trailing!,
+              ],
+            ),
+          ),
+          const Divider(height: 1, color: AppColors.border),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            child: child,
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _previewRow(double w, double h, String label, String value) {
+// ── Info Tile ─────────────────────────────────────────────────────
+class _InfoTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _InfoTile(
+      {required this.icon, required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: w * 0.05, bottom: h * 0.012),
-      child: Column(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: AppColors.textSecondary, size: 18),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Preview Tile ──────────────────────────────────────────────────
+class _PreviewTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isLast;
+
+  const _PreviewTile(
+      {required this.label, required this.value, this.isLast = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              Text(
+                value,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (!isLast) const Divider(height: 1, color: AppColors.border),
+      ],
+    );
+  }
+}
+
+// ── Error + Retry ─────────────────────────────────────────────────
+class _ErrorRetry extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorRetry({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Column(
+        children: [
+          Text(message,
               style: GoogleFonts.poppins(
-                  fontSize: 14, color: const Color(0x99ffffff))),
-          Text(value,
-              style: GoogleFonts.poppins(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
+                  color: AppColors.danger, fontSize: 13),
+              textAlign: TextAlign.center),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: onRetry,
+            child: Text('Retry',
+                style: GoogleFonts.poppins(
+                    color: AppColors.accent, fontWeight: FontWeight.w600)),
+          ),
         ],
       ),
     );

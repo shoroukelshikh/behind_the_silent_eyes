@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:behind_silent_eyes/core/theme/colors.dart';
 
 class CustomTextField extends StatelessWidget {
-
   final String label;
   final String hintText;
   final String? Function(String?)? validator;
@@ -31,20 +31,18 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Text(
           label,
-          style:  GoogleFonts.poppins(
-            fontSize: 14,
-            color: Color(0xff665F5F),
-            fontWeight: FontWeight.w700,
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.1,
           ),
         ),
-
-        const SizedBox(height: 8),
-
+        const SizedBox(height: 6),
         SizedBox(
-          width:double.infinity,
+          width: double.infinity,
           child: TextFormField(
             controller: controller,
             validator: validator,
@@ -52,41 +50,59 @@ class CustomTextField extends StatelessWidget {
             onTap: onTap,
             maxLines: maxLines,
             obscureText: obscureText,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w400,
+            ),
             decoration: InputDecoration(
-              suffixIcon: suffixIcon,
+              suffixIcon: suffixIcon != null
+                  ? IconTheme(
+                data: const IconThemeData(
+                  color: AppColors.textSecondary,
+                  size: 20,
+                ),
+                child: suffixIcon!,
+              )
+                  : null,
+              filled: true,
+              fillColor: AppColors.surface,
+              hintText: hintText,
+              hintStyle: GoogleFonts.poppins(
+                color: AppColors.textHint,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(
-                  color: Colors.grey,
+                  color: AppColors.border,
                   width: 1.5,
                 ),
-              ),
-
-              hintText: hintText,
-              hintStyle: GoogleFonts.poppins(
-                color: Color(0x66665F5F),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(
-                  color: Color(0xcc474161),
-                  width: 2,
+                  color: AppColors.accent,
+                  width: 1.5,
                 ),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(
-                  color: Colors.red,
-                  width: 2,
+                  color: AppColors.danger,
+                  width: 1.5,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(
-                  color: Colors.red,
-                  width: 2,
+                  color: AppColors.danger,
+                  width: 1.5,
                 ),
               ),
             ),

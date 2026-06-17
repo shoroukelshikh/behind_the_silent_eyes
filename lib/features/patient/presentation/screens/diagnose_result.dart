@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class DiagnoseResult extends StatelessWidget {
   final DiagnoseEntity diagnose;
-  final PatientEntity  patient;
+  final PatientEntity patient;
 
   const DiagnoseResult({
     super.key,
@@ -14,140 +14,271 @@ class DiagnoseResult extends StatelessWidget {
     required this.patient,
   });
 
+  Color _severityColor(String? severity) {
+    if (severity == null) return AppColors.textSecondary;
+    final s = severity.toLowerCase();
+    if (s.contains('severe') || s.contains('high')) return AppColors.danger;
+    if (s.contains('moderate') || s.contains('medium')) return AppColors.warning;
+    if (s.contains('mild') || s.contains('low')) return AppColors.success;
+    return AppColors.textSecondary;
+  }
+
+  Color _severityBg(String? severity) {
+    if (severity == null) return AppColors.background;
+    final s = severity.toLowerCase();
+    if (s.contains('severe') || s.contains('high')) return AppColors.dangerBg;
+    if (s.contains('moderate') || s.contains('medium')) return AppColors.warningBg;
+    if (s.contains('mild') || s.contains('low')) return AppColors.successBg;
+    return AppColors.background;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double w = MediaQuery.of(context).size.width;
-    final double h = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text(
-          'AI Diagnosis Result',
-          style: GoogleFonts.poppins(
-              color: const Color(0xff5E5757), fontWeight: FontWeight.w500),
-        ),
+        backgroundColor: AppColors.navy,
         elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(gradient: AppColors.primary),
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-              horizontal: w * 0.05, vertical: h * 0.12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Eye image (retinal scan placeholder) ──────────
-              Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: diagnose.imagePath != null &&
-                      diagnose.imagePath!.isNotEmpty
-                      ? Image.network(
-                    diagnose.imagePath!,
-                    width: w * 0.75,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _placeholderImage(w),
-                  )
-                      : _placeholderImage(w),
-                ),
-              ),
-              SizedBox(height: h * 0.03),
-
-              // ── Diagnosis Result Card ─────────────────────────
-              _sectionTitle('Diagnoses Result'),
-              SizedBox(height: h * 0.012),
-              _infoCard(w, h, [
-                _InfoRow(label: 'Diagnosis',    value: diagnose.diseaseType),
-                _InfoRow(label: 'Severity',     value: diagnose.severity ?? '-'),
-                _InfoRow(label: 'Confidence',   value: diagnose.confidencePercent),
-                _InfoRow(label: 'Status',       value: diagnose.status),
-                _InfoRow(label: 'Date',         value: diagnose.createdAt ?? '-'),
-                if (diagnose.notes != null && diagnose.notes!.isNotEmpty)
-                  _InfoRow(label: 'Notes', value: diagnose.notes!),
-              ]),
-
-              SizedBox(height: h * 0.025),
-
-              // ── Patient Information Card ──────────────────────
-              _sectionTitle('Patient Information'),
-              SizedBox(height: h * 0.012),
-              _infoCard(w, h, [
-                _InfoRow(label: 'Name',   value: patient.name),
-                _InfoRow(label: 'Age',    value: patient.age.toString()),
-                _InfoRow(label: 'Gender', value: patient.gender),
-                _InfoRow(label: 'National ID', value: patient.nationalId),
-                if (patient.phone != null && patient.phone!.isNotEmpty)
-                  _InfoRow(label: 'Phone', value: patient.phone!),
-              ]),
-
-              SizedBox(height: h * 0.03),
-            ],
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_rounded,
+              color: Colors.white, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Diagnosis result',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: Colors.white,
           ),
         ),
       ),
-    );
-  }
-
-  // ── Helpers ────────────────────────────────────────────────────
-  Widget _placeholderImage(double w) {
-    return Image.asset(
-      'assets/images/Central-Retinal-Artery-Occlusion 1.png',
-      width: w * 0.75,
-      fit: BoxFit.cover,
-    );
-  }
-
-  Widget _sectionTitle(String text) {
-    return Text(
-      text,
-      style: GoogleFonts.poppins(
-          color: const Color(0xff5E5757),
-          fontWeight: FontWeight.bold,
-          fontSize: 16),
-    );
-  }
-
-  Widget _infoCard(double w, double h, List<_InfoRow> rows) {
-    return Center(
-      child: Container(
-        width: w * 0.9,
-        decoration: BoxDecoration(
-          color: Colors.white54,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: EdgeInsets.all(w * 0.04),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: rows
-              .map((row) => Padding(
-            padding: EdgeInsets.only(bottom: h * 0.016),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(row.label,
-                    style: GoogleFonts.poppins(color: Colors.grey)),
-                Text(row.value,
-                    style: GoogleFonts.poppins(
-                        color: const Color(0xff5E5757),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500)),
+          children: [
+            // ── Retinal image ─────────────────────────────────────
+            Center(
+              child: Container(
+                width: double.infinity,
+                height: 220,
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.border),
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: diagnose.imagePath != null &&
+                    diagnose.imagePath!.isNotEmpty
+                    ? Image.network(
+                  diagnose.imagePath!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => _placeholder(),
+                )
+                    : _placeholder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // ── Severity badge ────────────────────────────────────
+            if (diagnose.severity != null)
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: _severityBg(diagnose.severity),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.circle,
+                            size: 8,
+                            color: _severityColor(diagnose.severity)),
+                        const SizedBox(width: 6),
+                        Text(
+                          diagnose.severity!,
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: _severityColor(diagnose.severity),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            if (diagnose.severity != null) const SizedBox(height: 16),
+
+            // ── Diagnosis result card ─────────────────────────────
+            _SectionCard(
+              title: 'Diagnosis result',
+              icon: Icons.biotech_rounded,
+              rows: [
+                _RowData(label: 'Disease', value: diagnose.diseaseType),
+                _RowData(
+                    label: 'Confidence',
+                    value: diagnose.confidencePercent),
+                _RowData(label: 'Status', value: diagnose.status),
+                _RowData(
+                    label: 'Date', value: diagnose.createdAt ?? '-'),
+                if (diagnose.notes != null && diagnose.notes!.isNotEmpty)
+                  _RowData(label: 'Notes', value: diagnose.notes!),
               ],
             ),
-          ))
-              .toList(),
+
+            const SizedBox(height: 16),
+
+            // ── Patient info card ──────────────────────────────────
+            _SectionCard(
+              title: 'Patient information',
+              icon: Icons.person_outline_rounded,
+              rows: [
+                _RowData(label: 'Name', value: patient.name),
+                _RowData(label: 'Age', value: patient.age.toString()),
+                _RowData(label: 'Gender', value: patient.gender),
+                _RowData(
+                    label: 'National ID', value: patient.nationalId),
+                if (patient.phone != null && patient.phone!.isNotEmpty)
+                  _RowData(label: 'Phone', value: patient.phone!),
+              ],
+            ),
+
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      color: AppColors.background,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.remove_red_eye_outlined,
+                color: AppColors.textHint, size: 40),
+            const SizedBox(height: 8),
+            Text(
+              'Retinal scan image',
+              style: GoogleFonts.poppins(
+                  fontSize: 13, color: AppColors.textHint),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _InfoRow {
+// ── Section Card ──────────────────────────────────────────────────
+class _RowData {
   final String label;
   final String value;
-  const _InfoRow({required this.label, required this.value});
+  const _RowData({required this.label, required this.value});
+}
+
+class _SectionCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final List<_RowData> rows;
+
+  const _SectionCard(
+      {required this.title, required this.icon, required this.rows});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: AppColors.accentLight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: AppColors.accent, size: 17),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1, color: AppColors.border),
+          // Rows
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+            child: Column(
+              children: rows
+                  .asMap()
+                  .entries
+                  .map((e) => Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          e.value.label,
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Flexible(
+                          child: Text(
+                            e.value.value,
+                            textAlign: TextAlign.end,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (e.key < rows.length - 1)
+                    const Divider(
+                        height: 1, color: AppColors.border),
+                ],
+              ))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

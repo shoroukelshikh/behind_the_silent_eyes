@@ -2,7 +2,7 @@ import 'package:behind_silent_eyes/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class GradientCard extends StatelessWidget {
-  final List<Widget> children; // The content of the Column
+  final List<Widget> children;
   final double width;
   final double? height;
   final BorderRadius? borderRadius;
@@ -11,8 +11,8 @@ class GradientCard extends StatelessWidget {
   const GradientCard({
     Key? key,
     required this.children,
-    required this.width ,
-    this.height ,
+    required this.width,
+    this.height,
     this.borderRadius,
     this.gradient,
   }) : super(key: key);
@@ -23,12 +23,11 @@ class GradientCard extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        gradient: gradient ??
-            AppColors.cardColor,
-        borderRadius: borderRadius ?? BorderRadius.circular(10),
+        gradient: gradient ?? AppColors.cardColor,
+        borderRadius: borderRadius ?? BorderRadius.circular(16),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min, // Column only as big as its children
+        mainAxisSize: MainAxisSize.min,
         children: children,
       ),
     );
